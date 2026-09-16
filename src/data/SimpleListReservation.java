@@ -23,7 +23,7 @@ public class SimpleListReservation {
 	
 	
 	//Añadir al ultimo lugar de la lista
-	public void saveElementFirst(LogicReservation reservation) {
+	public void saveElementLast(LogicReservation reservation) {
 		if (isEmpty()) {
 			this.firstReservation = this.lastReservation = new NodeReservation(reservation, null);
 		} else {		
@@ -35,7 +35,7 @@ public class SimpleListReservation {
 	
 	
 	//Obtener todas las reservaciones por vuelo
-	public String getReservation() {
+	public String getAllReservation() {
 		
 		String exit = "";
 		
