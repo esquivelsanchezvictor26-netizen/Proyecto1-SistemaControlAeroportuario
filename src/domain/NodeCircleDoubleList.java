@@ -1,39 +1,39 @@
 package domain;
 
-public class NodeCircleDoubleList<T> {
+public class NodeCircleDoubleList {
 
 
-	T data;
-	NodeCircleDoubleList<T> previusNode;
-	NodeCircleDoubleList<T> nextNode;
+	Flight flight;
+	NodeCircleDoubleList previusNode;
+	NodeCircleDoubleList nextNode;
 	
-	public NodeCircleDoubleList(T data, NodeCircleDoubleList<T> previusNode, NodeCircleDoubleList<T> nextNode) {
-		this.data = data;
+	public NodeCircleDoubleList(Flight flight, NodeCircleDoubleList previusNode, NodeCircleDoubleList nextNode) {
+		this.flight = flight;
 		this.previusNode = previusNode;
 		this.nextNode = nextNode;
 	}
 
-	public T getData() {
-		return data;
+	public Flight getData() {
+		return flight;
 	}
 
-	public void setData(T data) {
-		this.data = data;
+	public void setData(Flight flight) {
+		this.flight = flight;
 	}
 
-	public NodeCircleDoubleList<T> getPreviusNode() {
+	public NodeCircleDoubleList getPreviusNode() {
 		return previusNode;
 	}
 
-	public void setPreviusNode(NodeCircleDoubleList<T> previusNode) {
+	public void setPreviusNode(NodeCircleDoubleList previusNode) {
 		this.previusNode = previusNode;
 	}
 
-	public NodeCircleDoubleList<T> getNextNode() {
+	public NodeCircleDoubleList getNextNode() {
 		return nextNode;
 	}
 
-	public void setNextNode(NodeCircleDoubleList<T> nextNode) {
+	public void setNextNode(NodeCircleDoubleList nextNode) {
 		this.nextNode = nextNode;
 	}
 	

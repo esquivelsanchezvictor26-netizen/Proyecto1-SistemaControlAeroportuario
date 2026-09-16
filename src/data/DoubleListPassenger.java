@@ -10,6 +10,8 @@ public class DoubleListPassenger {
     private int quantityNode;
     private int maxCapacity;
 
+    public DoubleListPassenger() {}
+    
     public DoubleListPassenger(int maxCapacity) {
         this.head = null;
         this.tail = null;
@@ -50,7 +52,7 @@ public class DoubleListPassenger {
             return true;
         }
 
-        //  evaluar is va al medio o al final
+        //  evaluar si va al medio o al final
         NodeDoubleListPassenger current = head;
         while (current.getNextNode() != null && current.getNextNode().getPassenger().getAge() <= passenger.getAge()) {
             current = current.getNextNode();

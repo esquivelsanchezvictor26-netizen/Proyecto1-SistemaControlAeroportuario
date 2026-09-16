@@ -1,7 +1,5 @@
 package domain;
 
-import domain.Passenger;
-
 public class NodeDoubleListPassenger {
 
     private Passenger passenger;
