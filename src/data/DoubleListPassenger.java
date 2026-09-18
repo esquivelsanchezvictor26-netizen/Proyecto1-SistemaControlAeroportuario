@@ -5,22 +5,22 @@ import domain.Passenger;
 
 public class DoubleListPassenger{
 
-    private NodeDoubleList<Passenger>  head;
-    private NodeDoubleList<Passenger>  tail;
+    private NodeDoubleList<Passenger>  firstPassenger;
+    private NodeDoubleList<Passenger>  lastPassenger;
     private int quantityNode;
     private int maxCapacity;
 
     public DoubleListPassenger() {}
     
     public DoubleListPassenger(int maxCapacity) {
-        this.head = null;
-        this.tail = null;
+        this.firstPassenger = null;
+        this.lastPassenger = null;
         this.quantityNode = 0;
         this.maxCapacity = maxCapacity;
     }
 
     public boolean isEmpty() {
-        return head == null;
+        return firstPassenger == null;
     }
 
     public boolean isFull() {
@@ -29,31 +29,34 @@ public class DoubleListPassenger{
 
     // insertar manualmente por edad
     public boolean addOrderedByAge(Passenger passenger) {
+    	
         if (isFull()) {
             return false; // por si se excede su capacidad
         }
 
-        NodeDoubleList<Passenger>  newNode = new NodeDoubleList(passenger, null, null);
-
+        //Este siempre es null
+        NodeDoubleList<Passenger>  newNode = new NodeDoubleList<Passenger>(passenger, null, null);
+        
         // verificar que no este vacia
         if (isEmpty()) {
-            head = newNode;
-            tail = newNode;
+        	
+            firstPassenger = newNode;
+            lastPassenger = newNode;
             quantityNode++;
             return true;
         }
 
-        // insertar al inicio segun edad y cabeza
-        if (passenger.getAge() < head.getData().getAge()) {
-            newNode.setNextNode(head);
-            head.setPreviusNode(newNode);
-            head = newNode;
+        // insertar al inicio segun edad y primero
+        if (passenger.getAge() < firstPassenger.getData().getAge()) {
+            newNode.setNextNode(firstPassenger);
+            firstPassenger.setPreviusNode(newNode);
+            firstPassenger = newNode;
             quantityNode++;
             return true;
         }
 
         //  evaluar si va al medio o al final
-        NodeDoubleList<Passenger>  current = head;
+        NodeDoubleList<Passenger>  current = firstPassenger;
         while (current.getNextNode() != null && current.getNextNode().getData().getAge() <= passenger.getAge()) {
             current = current.getNextNode();
         }
@@ -64,7 +67,7 @@ public class DoubleListPassenger{
         if (current.getNextNode() != null) {
             current.getNextNode().setPreviusNode(newNode);
         } else {
-            tail = newNode; // al final
+            lastPassenger = newNode; // al final
         }
 
         current.setNextNode(newNode);
@@ -77,7 +80,7 @@ public class DoubleListPassenger{
         if (isEmpty()) return "No hay pasajeros registrados";
         
         StringBuilder sb = new StringBuilder();
-        NodeDoubleList<Passenger>  current = head;
+        NodeDoubleList<Passenger>  current = firstPassenger;
         while (current != null) {
             sb.append(current.getData().toString()).append("\n");
             current = current.getNextNode();
@@ -90,7 +93,7 @@ public class DoubleListPassenger{
         if (isEmpty()) return "No hay pasajeros registrados";
 
         StringBuilder sb = new StringBuilder();
-        NodeDoubleList<Passenger>  current = tail;
+        NodeDoubleList<Passenger>  current = lastPassenger;
         while (current != null) {
             sb.append(current.getData().toString()).append("\n");
             current = current.getPreviusNode();
@@ -103,6 +106,6 @@ public class DoubleListPassenger{
     }
 
     public NodeDoubleList<Passenger>  getHead() {
-        return head;
+        return firstPassenger;
     }
 }
