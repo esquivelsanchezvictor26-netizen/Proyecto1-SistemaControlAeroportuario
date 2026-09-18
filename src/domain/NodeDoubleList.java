@@ -7,7 +7,7 @@ public class NodeDoubleList<T> {
 	NodeDoubleList<T> previusNode;
 	NodeDoubleList<T> nextNode;
 	
-	public NodeDoubleList(T data, NodeDoubleList previusNode, NodeDoubleList nextNode) {
+	public NodeDoubleList(T data, NodeDoubleList<T> previusNode, NodeDoubleList<T> nextNode) {
 		this.data = data;
 		this.previusNode = previusNode;
 		this.nextNode = nextNode;
