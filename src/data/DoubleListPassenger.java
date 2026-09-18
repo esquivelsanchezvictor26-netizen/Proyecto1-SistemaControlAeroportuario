@@ -1,12 +1,12 @@
 package data;
 
+import domain.NodeDoubleList;
 import domain.Passenger;
-import domain.NodeDoubleListPassenger;
 
-public class DoubleListPassenger {
+public class DoubleListPassenger{
 
-    private NodeDoubleListPassenger head;
-    private NodeDoubleListPassenger tail;
+    private NodeDoubleList<Passenger>  head;
+    private NodeDoubleList<Passenger>  tail;
     private int quantityNode;
     private int maxCapacity;
 
@@ -33,7 +33,7 @@ public class DoubleListPassenger {
             return false; // por si se excede su capacidad
         }
 
-        NodeDoubleListPassenger newNode = new NodeDoubleListPassenger(passenger, null, null);
+        NodeDoubleList<Passenger>  newNode = new NodeDoubleList(passenger, null, null);
 
         // verificar que no este vacia
         if (isEmpty()) {
@@ -44,7 +44,7 @@ public class DoubleListPassenger {
         }
 
         // insertar al inicio segun edad y cabeza
-        if (passenger.getAge() < head.getPassenger().getAge()) {
+        if (passenger.getAge() < head.getData().getAge()) {
             newNode.setNextNode(head);
             head.setPreviusNode(newNode);
             head = newNode;
@@ -53,8 +53,8 @@ public class DoubleListPassenger {
         }
 
         //  evaluar si va al medio o al final
-        NodeDoubleListPassenger current = head;
-        while (current.getNextNode() != null && current.getNextNode().getPassenger().getAge() <= passenger.getAge()) {
+        NodeDoubleList<Passenger>  current = head;
+        while (current.getNextNode() != null && current.getNextNode().getData().getAge() <= passenger.getAge()) {
             current = current.getNextNode();
         }
 
@@ -77,9 +77,9 @@ public class DoubleListPassenger {
         if (isEmpty()) return "No hay pasajeros registrados";
         
         StringBuilder sb = new StringBuilder();
-        NodeDoubleListPassenger current = head;
+        NodeDoubleList<Passenger>  current = head;
         while (current != null) {
-            sb.append(current.getPassenger().toString()).append("\n");
+            sb.append(current.getData().toString()).append("\n");
             current = current.getNextNode();
         }
         return sb.toString();
@@ -90,9 +90,9 @@ public class DoubleListPassenger {
         if (isEmpty()) return "No hay pasajeros registrados";
 
         StringBuilder sb = new StringBuilder();
-        NodeDoubleListPassenger current = tail;
+        NodeDoubleList<Passenger>  current = tail;
         while (current != null) {
-            sb.append(current.getPassenger().toString()).append("\n");
+            sb.append(current.getData().toString()).append("\n");
             current = current.getPreviusNode();
         }
         return sb.toString();
@@ -102,7 +102,7 @@ public class DoubleListPassenger {
         return quantityNode;
     }
 
-    public NodeDoubleListPassenger getHead() {
+    public NodeDoubleList<Passenger>  getHead() {
         return head;
     }
 }
