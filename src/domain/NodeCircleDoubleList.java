@@ -4,12 +4,12 @@ public class NodeCircleDoubleList {
 
 
 	Flight flight;
-	NodeCircleDoubleList previusNode;
+	NodeCircleDoubleList previousNode;
 	NodeCircleDoubleList nextNode;
 	
-	public NodeCircleDoubleList(Flight flight, NodeCircleDoubleList previusNode, NodeCircleDoubleList nextNode) {
+	public NodeCircleDoubleList(Flight flight, NodeCircleDoubleList previousNode, NodeCircleDoubleList nextNode) {
 		this.flight = flight;
-		this.previusNode = previusNode;
+		this.previousNode = previousNode;
 		this.nextNode = nextNode;
 	}
 
@@ -21,12 +21,12 @@ public class NodeCircleDoubleList {
 		this.flight = flight;
 	}
 
-	public NodeCircleDoubleList getPreviusNode() {
-		return previusNode;
+	public NodeCircleDoubleList getPreviousNode() {
+		return previousNode;
 	}
 
-	public void setPreviusNode(NodeCircleDoubleList previusNode) {
-		this.previusNode = previusNode;
+	public void setPreviousNode(NodeCircleDoubleList previousNode) {
+		this.previousNode = previousNode;
 	}
 
 	public NodeCircleDoubleList getNextNode() {

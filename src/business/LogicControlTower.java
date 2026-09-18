@@ -90,7 +90,7 @@ public class LogicControlTower {
 	    // Se desengancha el pivote
 	    pivot.setNextNode(null);
 	    if (allListFlight != null) {
-	        allListFlight.setPreviusNode(null);
+	        allListFlight.setPreviousNode(null);
 	    }
 
 	    NodeCircleDoubleList prioritizeFirst = null;
@@ -107,7 +107,7 @@ public class LogicControlTower {
 
 	        NodeCircleDoubleList nextSaveNodeCircleDoubleList = current.getNextNode();
 	        current.setNextNode(null);
-	        current.setPreviusNode(null);
+	        current.setPreviousNode(null);
 
 	        double currentOccupation = listOccupancy.getOccupancyByNumberFlight(current.getData().getNumberFlight());
 
@@ -127,7 +127,7 @@ public class LogicControlTower {
 	                prioritizeLast = current;
 	            } else {
 	                prioritizeLast.setNextNode(current);
-	                current.setPreviusNode(prioritizeLast);
+	                current.setPreviousNode(prioritizeLast);
 	                prioritizeLast = current;
 	            }
 
@@ -137,7 +137,7 @@ public class LogicControlTower {
 	                remainingLast = current;
 	            } else {
 	                remainingLast.setNextNode(current);
-	                current.setPreviusNode(remainingLast);
+	                current.setPreviousNode(remainingLast);
 	                remainingLast = current;
 	            }
 	        }
@@ -150,11 +150,11 @@ public class LogicControlTower {
 
 	    if (prioritizeOrder == null) {
 
-	        pivot.setPreviusNode(null);
+	        pivot.setPreviousNode(null);
 	        pivot.setNextNode(prioritizeAll);
 
 	        if (prioritizeAll != null) {
-	            prioritizeAll.setPreviusNode(pivot);
+	            prioritizeAll.setPreviousNode(pivot);
 	        }
 
 	        return pivot;
@@ -167,11 +167,11 @@ public class LogicControlTower {
 	    }
 
 	    listQuue.setNextNode(pivot);
-	    pivot.setPreviusNode(listQuue);
+	    pivot.setPreviousNode(listQuue);
 	    pivot.setNextNode(prioritizeAll);
 
 	    if (prioritizeAll != null) {
-	        prioritizeAll.setPreviusNode(pivot);
+	        prioritizeAll.setPreviousNode(pivot);
 	    }
 
 	    return prioritizeOrder;

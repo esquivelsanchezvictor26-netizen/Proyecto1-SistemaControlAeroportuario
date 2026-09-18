@@ -32,15 +32,15 @@ public class DoubleCircleListFlight {
 			lastNodeCircleDoubleList = newNode;
 
 			newNode.setNextNode(newNode);
-			newNode.setPreviusNode(newNode);
+			newNode.setPreviousNode(newNode);
 		} else {
 
 			// [2]<-[1] -> <-[2]->[1]
-			newNode.setPreviusNode(lastNodeCircleDoubleList);
+			newNode.setPreviousNode(lastNodeCircleDoubleList);
 			newNode.setNextNode(firtsNodeCircleDoubleList);
 
 			lastNodeCircleDoubleList.setNextNode(newNode);
-			firtsNodeCircleDoubleList.setPreviusNode(newNode);
+			firtsNodeCircleDoubleList.setPreviousNode(newNode);
 
 			lastNodeCircleDoubleList = newNode;
 		}
@@ -95,7 +95,7 @@ public class DoubleCircleListFlight {
 		if (this.currentNode == null) {
 			this.currentNode = firtsNodeCircleDoubleList;
 		} else {
-			this.currentNode = this.currentNode.getPreviusNode();
+			this.currentNode = this.currentNode.getPreviousNode();
 
 		}
 	}

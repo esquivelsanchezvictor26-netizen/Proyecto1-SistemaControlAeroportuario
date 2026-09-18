@@ -3,12 +3,12 @@ package domain;
 public class NodeDoubleListPassenger {
 
     private Passenger passenger;
-    private NodeDoubleListPassenger previusNode;
+    private NodeDoubleListPassenger previousNode;
     private NodeDoubleListPassenger nextNode;
 
-    public NodeDoubleListPassenger(Passenger passenger, NodeDoubleListPassenger previusNode, NodeDoubleListPassenger nextNode) {
+    public NodeDoubleListPassenger(Passenger passenger, NodeDoubleListPassenger previousNode, NodeDoubleListPassenger nextNode) {
         this.passenger = passenger;
-        this.previusNode = previusNode;
+        this.previousNode = previousNode;
         this.nextNode = nextNode;
     }
 
@@ -20,12 +20,12 @@ public class NodeDoubleListPassenger {
         this.passenger = passenger;
     }
 
-    public NodeDoubleListPassenger getPreviusNode() {
-        return previusNode;
+    public NodeDoubleListPassenger getPreviousNode() {
+        return previousNode;
     }
 
-    public void setPreviusNode(NodeDoubleListPassenger previusNode) {
-        this.previusNode = previusNode;
+    public void setPreviousNode(NodeDoubleListPassenger previousNode) {
+        this.previousNode = previousNode;
     }
 
     public NodeDoubleListPassenger getNextNode() {

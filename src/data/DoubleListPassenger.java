@@ -46,7 +46,7 @@ public class DoubleListPassenger {
         // insertar al inicio segun edad y cabeza
         if (passenger.getAge() < head.getPassenger().getAge()) {
             newNode.setNextNode(head);
-            head.setPreviusNode(newNode);
+            head.setPreviousNode(newNode);
             head = newNode;
             quantityNode++;
             return true;
@@ -59,10 +59,10 @@ public class DoubleListPassenger {
         }
 
         newNode.setNextNode(current.getNextNode());
-        newNode.setPreviusNode(current);
+        newNode.setPreviousNode(current);
 
         if (current.getNextNode() != null) {
-            current.getNextNode().setPreviusNode(newNode);
+            current.getNextNode().setPreviousNode(newNode);
         } else {
             tail = newNode; // al final
         }
@@ -93,7 +93,7 @@ public class DoubleListPassenger {
         NodeDoubleListPassenger current = tail;
         while (current != null) {
             sb.append(current.getPassenger().toString()).append("\n");
-            current = current.getPreviusNode();
+            current = current.getPreviousNode();
         }
         return sb.toString();
     }

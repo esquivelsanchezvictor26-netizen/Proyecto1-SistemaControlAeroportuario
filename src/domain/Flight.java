@@ -4,13 +4,12 @@ public class Flight {
 
 	private int numberFlight;//Numero de vuelo
 	private String route;//Ruta
-	private String airplaneType;//Tipo de avión
+	private String airplaneType;//Tipo de avion
 	private int maximumCapacity;//Capacidad maxima
-	private boolean statusAirplane;//Status del avión
+	private boolean statusAirplane;//Status del avion
 	
 	
 	public Flight(int numberFlight, String route, String airpalneType, int maximumCapacity, boolean statusAirplane) {
-		super();
 		this.numberFlight = numberFlight;
 		this.route = route;
 		this.airplaneType = airpalneType;
