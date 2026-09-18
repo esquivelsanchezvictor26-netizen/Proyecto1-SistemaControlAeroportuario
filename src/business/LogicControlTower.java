@@ -4,7 +4,7 @@ import data.DoubleCircleListFlight;
 import data.SimpleListOccupancy;
 import data.SimpleListReservation;
 import domain.Flight;
-import domain.NodeCircleDoubleList;
+import domain.NodeDoubleList;
 import domain.NodeReservation;
 
 public class LogicControlTower {
@@ -30,7 +30,7 @@ public class LogicControlTower {
 			System.out.println("No hay vuelos registrados");
 		} else {
 
-			NodeCircleDoubleList aux = this.flight.getFirtsNodeCircleDoubleList();
+			NodeDoubleList<Flight> aux = this.flight.getFirtsNodeCircleDoubleList();
 
 			do {
 
@@ -77,15 +77,14 @@ public class LogicControlTower {
 	 * entonces se ordena el que tenga menor numero de vuelo
 	 */
 
-	public NodeCircleDoubleList orderingFlighByOcuppationQuickSort(NodeCircleDoubleList listFlight,
-	        SimpleListOccupancy listOccupancy) {
+	public NodeDoubleList<Flight> orderingFlighByOcuppationQuickSort(NodeDoubleList<Flight> listFlight,SimpleListOccupancy listOccupancy) {
 
 	    if (listFlight == null || listFlight.getNextNode() == null) {
 	        return listFlight;
 	    }
 
-	    NodeCircleDoubleList pivot = listFlight;
-	    NodeCircleDoubleList allListFlight = listFlight.getNextNode();
+	    NodeDoubleList<Flight> pivot = listFlight;
+	    NodeDoubleList<Flight> allListFlight = listFlight.getNextNode();
 
 	    // Se desengancha el pivote
 	    pivot.setNextNode(null);
@@ -93,19 +92,19 @@ public class LogicControlTower {
 	        allListFlight.setPreviusNode(null);
 	    }
 
-	    NodeCircleDoubleList prioritizeFirst = null;
-	    NodeCircleDoubleList prioritizeLast = null;
+	    NodeDoubleList<Flight> prioritizeFirst = null;
+	    NodeDoubleList<Flight> prioritizeLast = null;
 
-	    NodeCircleDoubleList remainingFirst = null;
-	    NodeCircleDoubleList remainingLast = null;
+	    NodeDoubleList<Flight> remainingFirst = null;
+	    NodeDoubleList<Flight> remainingLast = null;
 
 	    double occupationPivote = listOccupancy.getOccupancyByNumberFlight(pivot.getData().getNumberFlight());
 
-	    NodeCircleDoubleList current = allListFlight;
+	    NodeDoubleList<Flight> current = allListFlight;
 
 	    while (current != null) {
 
-	        NodeCircleDoubleList nextSaveNodeCircleDoubleList = current.getNextNode();
+	        NodeDoubleList<Flight> nextSaveNodeCircleDoubleList = current.getNextNode();
 	        current.setNextNode(null);
 	        current.setPreviusNode(null);
 
@@ -145,8 +144,8 @@ public class LogicControlTower {
 	        current = nextSaveNodeCircleDoubleList;
 	    }
 
-	    NodeCircleDoubleList prioritizeOrder = orderingFlighByOcuppationQuickSort(prioritizeFirst, listOccupancy);
-	    NodeCircleDoubleList prioritizeAll = orderingFlighByOcuppationQuickSort(remainingFirst, listOccupancy);
+	    NodeDoubleList<Flight> prioritizeOrder = orderingFlighByOcuppationQuickSort(prioritizeFirst, listOccupancy);
+	    NodeDoubleList<Flight> prioritizeAll = orderingFlighByOcuppationQuickSort(remainingFirst, listOccupancy);
 
 	    if (prioritizeOrder == null) {
 
@@ -160,7 +159,7 @@ public class LogicControlTower {
 	        return pivot;
 	    }
 
-	    NodeCircleDoubleList listQuue = prioritizeOrder;
+	    NodeDoubleList<Flight> listQuue = prioritizeOrder;
 
 	    while (listQuue.getNextNode() != null) {
 	        listQuue = listQuue.getNextNode();
