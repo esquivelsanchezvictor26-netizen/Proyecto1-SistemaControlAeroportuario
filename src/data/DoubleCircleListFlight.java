@@ -5,20 +5,20 @@ import domain.NodeDoubleList;
 
 public class DoubleCircleListFlight {
 
-	private NodeDoubleList<Flight> firtsNodeCircleDoubleList;
-	private NodeDoubleList<Flight> lastNodeCircleDoubleList;
+	private NodeDoubleList<Flight> headFlight;
+	private NodeDoubleList<Flight> tailFlight;
 	private NodeDoubleList<Flight> currentNode;
 	private int quantityNode;
 
 	public DoubleCircleListFlight() {
-		this.firtsNodeCircleDoubleList = null;
-		this.lastNodeCircleDoubleList = null;
+		this.headFlight = null;
+		this.tailFlight = null;
 		this.quantityNode = 0;
 	}
 
 	// Metodo para saber si la lista esta vacia
 	public boolean isEmpty() {
-		return this.firtsNodeCircleDoubleList == null && this.lastNodeCircleDoubleList == null;
+		return this.headFlight == null && this.tailFlight == null;
 	}
 
 	// Metodo para almacenar aviones, almacena desde el final
@@ -28,21 +28,21 @@ public class DoubleCircleListFlight {
 
 		if (isEmpty()) {
 
-			firtsNodeCircleDoubleList = newNode;
-			lastNodeCircleDoubleList = newNode;
+			headFlight = newNode;
+			tailFlight = newNode;
 
 			newNode.setNextNode(newNode);
 			newNode.setPreviusNode(newNode);
 		} else {
 
 			// [2]<-[1] -> <-[2]->[1]
-			newNode.setPreviusNode(lastNodeCircleDoubleList);
-			newNode.setNextNode(firtsNodeCircleDoubleList);
+			newNode.setPreviusNode(tailFlight);
+			newNode.setNextNode(headFlight);
 
-			lastNodeCircleDoubleList.setNextNode(newNode);
-			firtsNodeCircleDoubleList.setPreviusNode(newNode);
+			tailFlight.setNextNode(newNode);
+			headFlight.setPreviusNode(newNode);
 
-			lastNodeCircleDoubleList = newNode;
+			tailFlight = newNode;
 		}
 
 	}
@@ -59,7 +59,7 @@ public class DoubleCircleListFlight {
 
 		}
 
-		NodeDoubleList<Flight> aux = this.firtsNodeCircleDoubleList;
+		NodeDoubleList<Flight> aux = this.headFlight;
 
 		do {
 
@@ -67,7 +67,7 @@ public class DoubleCircleListFlight {
 
 			aux = aux.getNextNode();
 
-		} while (aux != this.firtsNodeCircleDoubleList);
+		} while (aux != this.headFlight);
 
 		return exit;
 	}
@@ -81,7 +81,7 @@ public class DoubleCircleListFlight {
 		}
 
 		if (this.currentNode == null) {
-			this.currentNode = firtsNodeCircleDoubleList;
+			this.currentNode = headFlight;
 		} else {
 			this.currentNode = this.currentNode.getNextNode();
 
@@ -93,7 +93,7 @@ public class DoubleCircleListFlight {
 	public void changeAirplanePreviousNode() {
 		
 		if (this.currentNode == null) {
-			this.currentNode = firtsNodeCircleDoubleList;
+			this.currentNode = headFlight;
 		} else {
 			this.currentNode = this.currentNode.getPreviusNode();
 
@@ -107,19 +107,19 @@ public class DoubleCircleListFlight {
 	
 	
 	public NodeDoubleList<Flight> getFirtsNodeCircleDoubleList() {
-		return firtsNodeCircleDoubleList;
+		return headFlight;
 	}
 
 	public void setFirtsNodeCircleDoubleList(NodeDoubleList<Flight> firtsNodeCircleDoubleList) {
-		this.firtsNodeCircleDoubleList = firtsNodeCircleDoubleList;
+		this.headFlight = firtsNodeCircleDoubleList;
 	}
 
 	public NodeDoubleList<Flight> getLastNodeCircleDoubleList() {
-		return lastNodeCircleDoubleList;
+		return tailFlight;
 	}
 
 	public void setLastNodeCircleDoubleList(NodeDoubleList<Flight> lastNodeCircleDoubleList) {
-		this.lastNodeCircleDoubleList = lastNodeCircleDoubleList;
+		this.tailFlight = lastNodeCircleDoubleList;
 	}
 
 	public NodeDoubleList<Flight> getCurrentNode() {
