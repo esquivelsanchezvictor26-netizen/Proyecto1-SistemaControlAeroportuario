@@ -1,29 +1,30 @@
 package data;
 
-import domain.NodeCircleDoubleList;
+import domain.Flight;
+import domain.NodeDoubleList;
 
-public class DoubleListFlight<T> {
+public class DoubleCircleListFlight {
 
-	private NodeCircleDoubleList<T> firtsNodeCircleDoubleList;
-	private NodeCircleDoubleList<T> lastNodeCircleDoubleList;
-	private NodeCircleDoubleList<T> currentNode;
+	private NodeDoubleList<Flight> firtsNodeCircleDoubleList;
+	private NodeDoubleList<Flight> lastNodeCircleDoubleList;
+	private NodeDoubleList<Flight> currentNode;
 	private int quantityNode;
 
-	public DoubleListFlight() {
+	public DoubleCircleListFlight() {
 		this.firtsNodeCircleDoubleList = null;
 		this.lastNodeCircleDoubleList = null;
 		this.quantityNode = 0;
 	}
 
 	// Metodo para saber si la lista esta vacia
-	boolean isEmpty() {
+	public boolean isEmpty() {
 		return this.firtsNodeCircleDoubleList == null && this.lastNodeCircleDoubleList == null;
 	}
 
 	// Metodo para almacenar aviones, almacena desde el final
-	public void addLastAirplane(T data) {
+	public void addLastAirplane(Flight flight) {
 
-		NodeCircleDoubleList<T> newNode = new NodeCircleDoubleList<>(data, null, null);
+		NodeDoubleList<Flight> newNode = new NodeDoubleList<Flight>(flight, null, null);
 
 		if (isEmpty()) {
 
@@ -58,7 +59,7 @@ public class DoubleListFlight<T> {
 
 		}
 
-		NodeCircleDoubleList<T> aux = this.firtsNodeCircleDoubleList;
+		NodeDoubleList<Flight> aux = this.firtsNodeCircleDoubleList;
 
 		do {
 
@@ -98,28 +99,34 @@ public class DoubleListFlight<T> {
 
 		}
 	}
-
-	public NodeCircleDoubleList<T> getFirtsNodeCircleDoubleList() {
+	
+	
+	
+	
+	
+	
+	
+	public NodeDoubleList<Flight> getFirtsNodeCircleDoubleList() {
 		return firtsNodeCircleDoubleList;
 	}
 
-	public void setFirtsNodeCircleDoubleList(NodeCircleDoubleList<T> firtsNodeCircleDoubleList) {
+	public void setFirtsNodeCircleDoubleList(NodeDoubleList<Flight> firtsNodeCircleDoubleList) {
 		this.firtsNodeCircleDoubleList = firtsNodeCircleDoubleList;
 	}
 
-	public NodeCircleDoubleList<T> getLastNodeCircleDoubleList() {
+	public NodeDoubleList<Flight> getLastNodeCircleDoubleList() {
 		return lastNodeCircleDoubleList;
 	}
 
-	public void setLastNodeCircleDoubleList(NodeCircleDoubleList<T> lastNodeCircleDoubleList) {
+	public void setLastNodeCircleDoubleList(NodeDoubleList<Flight> lastNodeCircleDoubleList) {
 		this.lastNodeCircleDoubleList = lastNodeCircleDoubleList;
 	}
 
-	public NodeCircleDoubleList<T> getCurrentNode() {
+	public NodeDoubleList<Flight> getCurrentNode() {
 		return currentNode;
 	}
 
-	public void setCurrentNode(NodeCircleDoubleList<T> currentNode) {
+	public void setCurrentNode(NodeDoubleList<Flight> currentNode) {
 		this.currentNode = currentNode;
 	}
 

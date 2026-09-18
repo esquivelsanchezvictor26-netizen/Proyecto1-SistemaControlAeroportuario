@@ -1,22 +1,22 @@
 package business;
 
-import data.DoubleListFlight;
+import data.DoubleCircleListFlight;
 import domain.Flight;
-import domain.NodeCircleDoubleList;
+import domain.NodeDoubleList;
 
-public class LogicFlight<T> {
+public class LogicFlight {
 
-	DoubleListFlight<Flight> list;
+	DoubleCircleListFlight list;
 	Flight flight;
 
 	public LogicFlight() {
-		list = new DoubleListFlight<Flight>();
+		list = new DoubleCircleListFlight();
 	}
 
 	// Saber si hay vuelos duplicados
 	public boolean repeatedFlights(Flight flight) {
 
-		NodeCircleDoubleList<Flight> aux = list.getFirtsNodeCircleDoubleList();
+		NodeDoubleList<Flight> aux = list.getFirtsNodeCircleDoubleList();
 
 		do {
 
