@@ -51,7 +51,7 @@ public class ReservationPanel extends JPanel {
 		cbxFlight.setBounds(40, 69, 460, 38);
 		panelCard.add(cbxFlight);
 
-		JLabel lblId = new JLabel("Identificaci\u00f3n");
+		JLabel lblId = new JLabel("Identificacion");
 		lblId.setForeground(new Color(84, 98, 120));
 		lblId.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		lblId.setBounds(40, 125, 460, 22);
@@ -104,7 +104,6 @@ public class ReservationPanel extends JPanel {
 		panelCard.add(btnRegister);
 	}
 
-	// Empties the passenger fields
 	public void clearForm() {
 		tId.setText("");
 		tName.setText("");

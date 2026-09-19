@@ -16,7 +16,7 @@ import javax.swing.border.TitledBorder;
 
 public class FlightPanel extends JPanel {
 
-	// Current flight data (filled by the controller)
+
 	public JLabel lblNumber;
 	public JLabel lblRoute;
 	public JLabel lblType;
@@ -24,7 +24,7 @@ public class FlightPanel extends JPanel {
 	public JLabel lblAvailable;
 	public JLabel lblStatus;
 
-	// Circular navigation and Control Tower mode
+	
 	public JButton btnPrevious;
 	public JButton btnNext;
 	public JButton btnPrioritize;
@@ -74,7 +74,7 @@ public class FlightPanel extends JPanel {
 		lblType.setFont(new Font("Segoe UI", Font.BOLD, 22));
 		panelCard.add(lblType);
 
-		JLabel lblCapacityTitle = new JLabel("Capacidad m\u00e1xima");
+		JLabel lblCapacityTitle = new JLabel("Capacidad maxima");
 		lblCapacityTitle.setForeground(new Color(84, 98, 120));
 		lblCapacityTitle.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		panelCard.add(lblCapacityTitle);

@@ -33,7 +33,7 @@ public class BoardingPanel extends JPanel {
 		setOpaque(false);
 		setLayout(new BorderLayout(0, 20));
 
-		// ----- Flight selector -----
+	
 		JPanel panelFlight = new JPanel();
 		panelFlight.setBackground(Color.WHITE);
 		panelFlight.setBorder(new CompoundBorder(new TitledBorder(new LineBorder(new Color(186, 204, 228), 1),
@@ -50,13 +50,13 @@ public class BoardingPanel extends JPanel {
 		panelFlight.add(lblFlight);
 
 		cbxFlight = new JComboBox<String>();
-		cbxFlight.setBounds(220, 32, 420, 38);
+		cbxFlight.setBounds(178, 32, 420, 38);
 		cbxFlight.setForeground(new Color(30, 41, 59));
 		cbxFlight.setBackground(Color.WHITE);
 		cbxFlight.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		panelFlight.add(cbxFlight);
 
-		// ----- Waiting queue and boarded passengers -----
+	
 		JPanel panelCenter = new JPanel();
 		panelCenter.setOpaque(false);
 		add(panelCenter, BorderLayout.CENTER);
@@ -100,7 +100,7 @@ public class BoardingPanel extends JPanel {
 		taBoarded.setMargin(new Insets(10, 12, 10, 12));
 		scrollBoarded.setViewportView(taBoarded);
 
-		// ----- Board next button -----
+	
 		JPanel panelButton = new JPanel();
 		panelButton.setOpaque(false);
 		add(panelButton, BorderLayout.SOUTH);
