@@ -5,7 +5,7 @@ import data.SimpleListOccupancy;
 import data.SimpleListReservation;
 import domain.Flight;
 import domain.NodeDoubleList;
-import domain.NodeReservation;
+import domain.NodeSimpleList;
 
 public class LogicControlTower {
 
@@ -35,12 +35,12 @@ public class LogicControlTower {
 			do {
 
 				Flight currentFlight = aux.getData();
-				NodeReservation currentReservation = listReservation.getFirstReservation();
+				NodeSimpleList<LogicReservation> currentReservation = listReservation.getFirstReservation();
 				boolean found = false;
 
 				while (currentReservation != null) {
 
-					LogicReservation reservation = currentReservation.getReservation();
+					LogicReservation reservation = currentReservation.getData();
 
 					if (currentFlight.getNumberFlight() == reservation.getFlight().getNumberFlight()) {
 
