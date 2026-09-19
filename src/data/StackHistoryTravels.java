@@ -39,4 +39,13 @@ public class StackHistoryTravels {
 	    }
 	    return showRecursively(node.getNextNode()) + node.getData() + "\n";
 	}
+
+	public NodeSimpleList<SimpleListReservation> getTop() {
+		return top;
+	}
+
+	public int getSize() {
+		return size;
+	}
+	
 }
