@@ -1,4 +1,5 @@
 package domain;
+import data.DoubleListPassenger;
 
 public class Flight {
 
@@ -8,16 +9,22 @@ public class Flight {
 	private int maximumCapacity;//Capacidad maxima
 	private boolean statusAirplane;//Status del avión
 	
-	
-	public Flight(int numberFlight, String route, String airpalneType, int maximumCapacity, boolean statusAirplane) {
+	// Aqui agregamos lista pasajeros para poner hacer los calculos de vuelos disponibles
+	private DoubleListPassenger passengerList; 
+
+	public Flight(int numberFlight, String route, String airplaneType, int maximumCapacity, boolean statusAirplane) {
 		super();
 		this.numberFlight = numberFlight;
 		this.route = route;
-		this.airplaneType = airpalneType;
+		this.airplaneType = airplaneType;
 		this.maximumCapacity = maximumCapacity;
 		this.statusAirplane = statusAirplane;
+		this.passengerList = new DoubleListPassenger(maximumCapacity); //Inicializamos la lista para este vuelo, la lista es del tamanio de la capacidad
 	}
 
+	public DoubleListPassenger getPassengerList() {
+		return passengerList;  
+	}
 
 	public int getNumberFlight() {
 		return numberFlight;
