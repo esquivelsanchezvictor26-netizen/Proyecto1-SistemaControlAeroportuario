@@ -13,7 +13,7 @@ public class LogicControlTower {
 	SimpleListReservation listRservation;
 	SimpleListOccupancy listOccupancy;
 
-	LogicControlTower(Flight flight) {
+	public LogicControlTower(Flight flight) {
 		this.flight = new DoubleCircleListFlight();
 		this.listRservation = new SimpleListReservation();
 		this.listOccupancy = new SimpleListOccupancy();
