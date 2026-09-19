@@ -13,6 +13,13 @@ public class NodeSimpleList<T>{
 		this.nextNode = nextNode;
 	}
 
+	//Este contructor es para las pilas
+	public NodeSimpleList(T data) {
+		super();
+		this.data = data;
+		this.nextNode = null;
+	}
+	
 	public T getData() {
 		return data;
 	}
