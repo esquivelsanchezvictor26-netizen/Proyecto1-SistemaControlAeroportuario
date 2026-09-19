@@ -1,12 +1,12 @@
 package data;
 
 import business.LogicReservation;
-import domain.NodeReservation;
+import domain.NodeSimpleList;
 
 public class SimpleListReservation {
 
-	NodeReservation firstReservation;
-	NodeReservation lastReservation;
+	NodeSimpleList<LogicReservation> firstReservation;
+	NodeSimpleList<LogicReservation> lastReservation;
 	int quantityReservation;
 
 	public SimpleListReservation() {
@@ -25,9 +25,9 @@ public class SimpleListReservation {
 	//Añadir al ultimo lugar de la lista
 	public void saveElementLast(LogicReservation reservation) {
 		if (isEmpty()) {
-			this.firstReservation = this.lastReservation = new NodeReservation(reservation, null);
+			this.firstReservation = this.lastReservation = new NodeSimpleList<LogicReservation>(reservation, null);
 		} else {		
-			this.lastReservation.setNextNode(new NodeReservation(reservation, null));
+			this.lastReservation.setNextNode(new NodeSimpleList<LogicReservation>(reservation, null));
 			this.lastReservation = this.lastReservation.getNextNode();
 		}
 		quantityReservation++;
@@ -39,11 +39,11 @@ public class SimpleListReservation {
 		
 		String exit = "";
 		
-		NodeReservation aux = this.firstReservation;
+		NodeSimpleList<LogicReservation> aux = this.firstReservation;
 		
 		while(aux != null) {
 			
-			exit += aux.getReservation() + " ";
+			exit += aux.getData() + " ";
 			
 			aux = aux.getNextNode();
 		}
@@ -51,19 +51,19 @@ public class SimpleListReservation {
 		return exit;
 	}
 
-	public NodeReservation getFirstReservation() {
+	public NodeSimpleList<LogicReservation> getFirstReservation() {
 		return firstReservation;
 	}
 
-	public void setFirstReservation(NodeReservation firstReservation) {
+	public void setFirstReservation(NodeSimpleList<LogicReservation> firstReservation) {
 		this.firstReservation = firstReservation;
 	}
 
-	public NodeReservation getLastReservation() {
+	public NodeSimpleList<LogicReservation> getLastReservation() {
 		return lastReservation;
 	}
 
-	public void setLastReservation(NodeReservation lastReservation) {
+	public void setLastReservation(NodeSimpleList<LogicReservation> lastReservation) {
 		this.lastReservation = lastReservation;
 	}
 
