@@ -17,17 +17,17 @@ import javax.swing.border.TitledBorder;
 public class FlightPanel extends JPanel {
 
 
-	public JLabel lblNumber;
-	public JLabel lblRoute;
-	public JLabel lblType;
-	public JLabel lblCapacity;
-	public JLabel lblAvailable;
-	public JLabel lblStatus;
+	private JLabel lblNumber;
+	private JLabel lblRoute;
+	private JLabel lblType;
+	private JLabel lblCapacity;
+	private JLabel lblAvailable;
+	private JLabel lblStatus;
 
 	
-	public JButton btnPrevious;
-	public JButton btnNext;
-	public JButton btnPrioritize;
+	private JButton btnPrevious;
+	private JButton btnNext;
+	private JButton btnPrioritize;
 
 	/**
 	 * Create the panel.
@@ -139,4 +139,78 @@ public class FlightPanel extends JPanel {
 		btnPrioritize.setFocusPainted(false);
 		panelNav.add(btnPrioritize);
 	}
+
+	public JLabel getLblNumber() {
+		return lblNumber;
+	}
+
+	public void setLblNumber(JLabel lblNumber) {
+		this.lblNumber = lblNumber;
+	}
+
+	public JLabel getLblRoute() {
+		return lblRoute;
+	}
+
+	public void setLblRoute(JLabel lblRoute) {
+		this.lblRoute = lblRoute;
+	}
+
+	public JLabel getLblType() {
+		return lblType;
+	}
+
+	public void setLblType(JLabel lblType) {
+		this.lblType = lblType;
+	}
+
+	public JLabel getLblCapacity() {
+		return lblCapacity;
+	}
+
+	public void setLblCapacity(JLabel lblCapacity) {
+		this.lblCapacity = lblCapacity;
+	}
+
+	public JLabel getLblAvailable() {
+		return lblAvailable;
+	}
+
+	public void setLblAvailable(JLabel lblAvailable) {
+		this.lblAvailable = lblAvailable;
+	}
+
+	public JLabel getLblStatus() {
+		return lblStatus;
+	}
+
+	public void setLblStatus(JLabel lblStatus) {
+		this.lblStatus = lblStatus;
+	}
+
+	public JButton getBtnPrevious() {
+		return btnPrevious;
+	}
+
+	public void setBtnPrevious(JButton btnPrevious) {
+		this.btnPrevious = btnPrevious;
+	}
+
+	public JButton getBtnNext() {
+		return btnNext;
+	}
+
+	public void setBtnNext(JButton btnNext) {
+		this.btnNext = btnNext;
+	}
+
+	public JButton getBtnPrioritize() {
+		return btnPrioritize;
+	}
+
+	public void setBtnPrioritize(JButton btnPrioritize) {
+		this.btnPrioritize = btnPrioritize;
+	}
+	
+	
 }

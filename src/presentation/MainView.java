@@ -21,10 +21,10 @@ public class MainView extends JFrame {
 	private JPanel panelContent;
 	private JLabel lblTitle;
 
-	public JButton btnFlights;
-	public JButton btnReservations;
-	public JButton btnTrips;
-	public JButton btnBoarding;
+	private JButton btnFlights;
+	private JButton btnReservations;
+	private JButton btnTrips;
+	private JButton btnBoarding;
 
 	/**
 	 * Create the frame.
@@ -138,6 +138,22 @@ public class MainView extends JFrame {
 	
 		panelContent.repaint();
 		panelContent.revalidate();
+	}
+
+	public JButton getBtnFlights() {
+		return btnFlights;
+	}
+
+	public JButton getBtnReservations() {
+		return btnReservations;
+	}
+
+	public JButton getBtnTrips() {
+		return btnTrips;
+	}
+
+	public JButton getBtnBoarding() {
+		return btnBoarding;
 	}
 
 }

@@ -21,10 +21,10 @@ import javax.swing.border.TitledBorder;
 
 public class BoardingPanel extends JPanel {
 
-	public JComboBox<String> cbxFlight;
-	public JTextArea taQueue;
-	public JTextArea taBoarded;
-	public JButton btnBoardNext;
+	private JComboBox<String> cbxFlight;
+	private JTextArea taQueue;
+	private JTextArea taBoarded;
+	private JButton btnBoardNext;
 
 	/**
 	 * Create the panel.
@@ -115,5 +115,37 @@ public class BoardingPanel extends JPanel {
 		btnBoardNext.setBorder(new LineBorder(new Color(21, 101, 192), 2));
 		btnBoardNext.setFocusPainted(false);
 		panelButton.add(btnBoardNext);
+	}
+
+	public JComboBox<String> getCbxFlight() {
+		return cbxFlight;
+	}
+
+	public void setCbxFlight(JComboBox<String> cbxFlight) {
+		this.cbxFlight = cbxFlight;
+	}
+
+	public JTextArea getTaQueue() {
+		return taQueue;
+	}
+
+	public void setTaQueue(JTextArea taQueue) {
+		this.taQueue = taQueue;
+	}
+
+	public JTextArea getTaBoarded() {
+		return taBoarded;
+	}
+
+	public void setTaBoarded(JTextArea taBoarded) {
+		this.taBoarded = taBoarded;
+	}
+
+	public JButton getBtnBoardNext() {
+		return btnBoardNext;
+	}
+
+	public void setBtnBoardNext(JButton btnBoardNext) {
+		this.btnBoardNext = btnBoardNext;
 	}
 }
