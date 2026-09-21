@@ -13,9 +13,10 @@ import domain.Passenger;
 
 public class FilesJson {
 
-	public FilesJson() {}
+	public FilesJson() {
+	}
 
-	//METODOS PARA LISTAS DOBLES CIRCULARES
+	// METODOS PARA LISTAS DOBLES CIRCULARES
 	public void writeFlights(DoubleCircleListFlight listFlight, String address) {
 		if (listFlight == null || listFlight.isEmpty()) {
 			return;
@@ -49,7 +50,7 @@ public class FilesJson {
 		return listFlight;
 	}
 
-	//METODOS PARA LISTAS DOBLES
+	// METODOS PARA LISTAS DOBLES
 	public void writePassengers(DoubleListPassenger listPassenger, String address) {
 		if (listPassenger == null || listPassenger.isEmpty()) {
 			return;
@@ -68,7 +69,7 @@ public class FilesJson {
 
 		writeArrayToJson(passengerArray, address);
 	}
-	
+
 	public DoubleListPassenger readPassengers(String address, int maxCapacity) {
 		DoubleListPassenger listPassenger = new DoubleListPassenger(maxCapacity);
 		Passenger[] passengerArray = readArrayFromJson(address, Passenger[].class);
@@ -76,14 +77,15 @@ public class FilesJson {
 		if (passengerArray != null) {
 			int index = 0;
 			while (index < passengerArray.length) {
-				listPassenger.addOrderedByAge(passengerArray[index]);
+				listPassenger.addLast(passengerArray[index]);
 				index++;
 			}
+			listPassenger.orderByNameAndAgeBubble();
 		}
 		return listPassenger;
 	}
 
-	//METODOS PARA COLAS
+	// METODOS PARA COLAS
 	public void writeBoardingQueue(BoardingQueue queue, String address) {
 		if (queue == null || queue.isEmpty()) {
 			return;
@@ -116,14 +118,15 @@ public class FilesJson {
 		return queue;
 	}
 
+
 	//METODOS PARA PILAS
 	public void writeTravelHistory(StackHistoryTravels stack, String address) {
 		if (stack == null || stack.isEmpty()) {
 			return;
 		}
 
-		SimpleListReservation[] array = new SimpleListReservation[stack.getSize()];
-		NodeSimpleList<SimpleListReservation> current = stack.getTop();
+		String[] array = new String[stack.getSize()]; 
+		NodeSimpleList<String> current = stack.getTop();
 		int index = 0;
 
 		while (current != null) {
@@ -137,7 +140,7 @@ public class FilesJson {
 
 	public StackHistoryTravels readTravelHistory(String address) {
 		StackHistoryTravels stack = new StackHistoryTravels();
-		SimpleListReservation[] array = readArrayFromJson(address, SimpleListReservation[].class);
+		String[] array = readArrayFromJson(address, String[].class);
 
 		if (array != null) {
 			int index = array.length - 1;
@@ -149,7 +152,7 @@ public class FilesJson {
 		return stack;
 	}
 
-	//METODOS GENERICOS PARA ESCRIBIR Y GUARDAR LISTAS
+	// METODOS GENERICOS PARA ESCRIBIR Y GUARDAR LISTAS
 	private <T> void writeArrayToJson(T[] dataArray, String address) {
 		Gson gson = new Gson();
 		try (FileWriter writer = new FileWriter(address)) {
@@ -174,6 +177,4 @@ public class FilesJson {
 		}
 	}
 
-
 }
-
