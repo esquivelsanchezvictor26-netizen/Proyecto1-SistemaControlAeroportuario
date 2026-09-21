@@ -1,5 +1,7 @@
-package business;
-package controller;
+package business.main;
+
+/*
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +19,7 @@ import presentation.ReservationPanel;
 import presentation.TripsPanel;
 
 
-public class Controller implements ActionListener {
+public class ControllerB implements ActionListener {
 
 	private MainView view;
 	private FlightPanel flightPanel;
@@ -41,19 +43,19 @@ public class Controller implements ActionListener {
 
 	private void addListeners() {
 	
-		view.btnFlights.addActionListener(this);
-		view.btnReservations.addActionListener(this);
-		view.btnTrips.addActionListener(this);
-		view.btnBoarding.addActionListener(this);
+		view.getBtnFlights().addActionListener(this);
+		view.getBtnReservations().addActionListener(this);
+		view.getBtnTrips().addActionListener(this);
+		view.getBtnBoarding().addActionListener(this);
 
-		flightPanel.btnPrevious.addActionListener(this);
-		flightPanel.btnNext.addActionListener(this);
-		flightPanel.btnPrioritize.addActionListener(this);
-		reservationPanel.btnRegister.addActionListener(this);
+		flightPanel.getBtnPrevious().addActionListener(this);
+		flightPanel.getBtnNext().addActionListener(this);
+		flightPanel.getBtnPrioritize().addActionListener(this);
+		reservationPanel.getBtnRegister().addActionListener(this);
 
 		// Abordaje
-		boardingPanel.cbxFlight.addActionListener(this);
-		boardingPanel.btnBoardNext.addActionListener(this);
+		boardingPanel.getCbxFlight().addActionListener(this);
+		boardingPanel.getBtnBoardNext().addActionListener(this);
 	}
 
 	@Override
@@ -64,26 +66,26 @@ public class Controller implements ActionListener {
 		try {
 			Object source = e.getSource();
 
-			if (source == view.btnFlights) {
+			if (source == view.getBtnFlights()) {
 				showFlights();
-			} else if (source == view.btnReservations) {
+			} else if (source == view.getBtnReservations()) {
 				showReservations();
-			} else if (source == view.btnTrips) {
+			} else if (source == view.getBtnTrips()) {
 				showTrips();
-			} else if (source == view.btnBoarding) {
+			} else if (source == view.getBtnBoarding()) {
 				showBoarding();
-			} else if (source == flightPanel.btnNext) {
-				refreshFlightCard();
-			} else if (source == flightPanel.btnPrioritize) {
-				prioritizeFlights();
+			} else if (source == flightPanel.getBtnNext()) {
+				//refreshFlightCard();
+			} else if (source == flightPanel.getBtnPrioritize()) {
+				//prioritizeFlights();
 
-			} else if (source == reservationPanel.btnRegister) {
+			} else if (source == reservationPanel.getBtnRegister()) {
 				registerReservation();
 
-			} else if (source == boardingPanel.cbxFlight) {
-				refreshBoardingPanel();
-			}  else if (source == boardingPanel.btnBoardNext) {
-				boardNext();
+			} else if (source == boardingPanel.getCbxFlight()) {
+				//refreshBoardingPanel();
+			}  else if (source == boardingPanel.getBtnBoardNext()) {
+				//boardNext();
 			}
 		} catch (Exception ex) {
 			showError("	ERROR " + ex.getMessage());
@@ -92,23 +94,23 @@ public class Controller implements ActionListener {
 
 
 	private void showFlights() {
-		refreshFlightCard();
+		//refreshFlightCard();
 		view.setContent(flightPanel, "Vuelos disponibles");
 	}
 
 	private void showReservations() {
-		fillFlightCombo(reservationPanel.cbxFlight);
+		fillFlightCombo(reservationPanel.getCbxFlight());
 		view.setContent(reservationPanel, "Reservar");
 	}
 
 	private void showPassengers() {
-		fillFlightCombo(passengersPanel.cbxFlight);          //Esta parte en espera ya que no se si ponerlo
-		refreshPassengersPanel();
-		view.setContent(passengersPanel, "Pasajeros y asientos");
+		//fillFlightCombo(getPassengersPanel().cbxFlight);          //Esta parte en espera ya que no se si ponerlo
+		//refreshPassengersPanel();
+		//view.setContent(passengersPanel, "Pasajeros y asientos");
 	}
 
 	private void showTrips() {
-		tripsPanel.taTrips.setCaretPosition(0);
+		tripsPanel.getTaTrips().setCaretPosition(0);
 		view.setContent(tripsPanel, "Mis viajes");
 	}
 
@@ -270,7 +272,7 @@ public class Controller implements ActionListener {
 				JOptionPane.INFORMATION_MESSAGE);
 	}
 
-*/
+//
 	private void fillFlightCombo(JComboBox<String> combo) {
 		int selected = getSelectedNumber(combo);
 		String[] labels = airport.getFlightLabels();
@@ -332,4 +334,4 @@ public class Controller implements ActionListener {
 	private void showError(String message) {
 		JOptionPane.showMessageDialog(view, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
-}
+}*/
