@@ -1,8 +1,8 @@
-package business;
+package business.Logic;
 
 import data.DoubleCircleListFlight;
 import domain.Flight;
-import domain.NodeDoubleList;
+import domain.Node.NodeDoubleList;
 
 public class LogicFlight {
 
@@ -16,20 +16,17 @@ public class LogicFlight {
 	// Saber si hay vuelos duplicados
 	public boolean repeatedFlights(Flight flight) {
 
+		if (list.isEmpty() || list.getFirtsNodeCircleDoubleList() == null) {
+			return false;
+		}
+
 		NodeDoubleList<Flight> aux = list.getFirtsNodeCircleDoubleList();
 
 		do {
-
 			if (aux.getData().getNumberFlight() == flight.getNumberFlight()) {
-
 				return true;
-
-			} else {
-
-				aux = aux.getNextNode();
-
 			}
-
+			aux = aux.getNextNode();
 		} while (aux != list.getFirtsNodeCircleDoubleList());
 
 		return false;

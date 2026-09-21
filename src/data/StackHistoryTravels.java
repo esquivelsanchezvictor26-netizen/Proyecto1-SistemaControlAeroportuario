@@ -1,6 +1,6 @@
 package data;
 
-import domain.NodeSimpleList;
+import domain.Node.NodeSimpleList;
 
 public class StackHistoryTravels {
 

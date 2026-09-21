@@ -1,11 +1,11 @@
-package business;
+package business.Logic;
 
 import data.DoubleCircleListFlight;
 import data.SimpleListOccupancy;
 import data.SimpleListReservation;
 import domain.Flight;
-import domain.NodeDoubleList;
-import domain.NodeSimpleList;
+import domain.Node.NodeDoubleList;
+import domain.Node.NodeSimpleList;
 
 public class LogicControlTower {
 
@@ -60,9 +60,9 @@ public class LogicControlTower {
 			aux = aux.getNextNode();
 		} while (aux != this.flight.getFirtsNodeCircleDoubleList());
 	}
-	
-	
-	
+
+
+
 	public void prioritizeFlights() {
 
 		if (this.flight.isEmpty()) {
@@ -99,7 +99,7 @@ public class LogicControlTower {
 		this.flight.setLastNodeCircleDoubleList(newTail);
 		this.flight.setCurrentNode(newHead); // la navegación arranca de nuevo desde el primero
 	}
-	
+
 
 	/**
 	 * QuickSort manual sobre una lista doblemente enlazada de vuelos (sin arreglos
@@ -237,7 +237,7 @@ public class LogicControlTower {
 				prioritizeAll.setPreviusNode(pivot);
 			}
 
-			
+
 		}
 
 		// Caso general: "prioritizeOrder" ya es una lista (doblemente enlazada)
@@ -246,7 +246,7 @@ public class LogicControlTower {
 		return pivot; // el pivote queda como nueva cabeza
 	}
 
-	
+
 	public SimpleListOccupancy getListOccupancy() {
 		return listOccupancy;
 	}

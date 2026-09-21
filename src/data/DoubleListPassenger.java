@@ -1,6 +1,6 @@
 package data;
 
-import domain.NodeDoubleList;
+import domain.Node.NodeDoubleList;
 import domain.Passenger;
 
 public class DoubleListPassenger {

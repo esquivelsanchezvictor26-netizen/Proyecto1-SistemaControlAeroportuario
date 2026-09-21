@@ -1,9 +1,9 @@
-package business;
+package business.Logic;
 
 import data.BoardingQueue;
 import data.DoubleListPassenger;
 import domain.Flight;
-import domain.NodeDoubleList;
+import domain.Node.NodeDoubleList;
 import domain.Passenger;
 import data.StackHistoryTravels;
 
