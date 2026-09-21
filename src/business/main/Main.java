@@ -1,6 +1,6 @@
 package business.main;
 
-import business.Controller.ControllerAirport;
+import business.controller.ControllerAirport;
 
 public class Main {
 

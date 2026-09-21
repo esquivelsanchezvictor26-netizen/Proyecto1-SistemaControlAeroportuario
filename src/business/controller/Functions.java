@@ -1,4 +1,4 @@
-package business.Controller;
+package business.controller;
 
 import javax.swing.JComboBox;
 
