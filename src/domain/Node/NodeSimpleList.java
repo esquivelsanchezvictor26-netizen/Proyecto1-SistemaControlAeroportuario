@@ -1,6 +1,4 @@
-package domain;
-
-
+package domain.Node;
 
 public class NodeSimpleList<T>{
 

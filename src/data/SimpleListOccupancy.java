@@ -1,6 +1,6 @@
 package data;
 
-import domain.NodeOccupancyFlight;
+import domain.Node.NodeOccupancyFlight;
 
 public class SimpleListOccupancy {
 
@@ -23,17 +23,17 @@ public class SimpleListOccupancy {
 	// Metodo que añade al ultimo de la lista
 	public void addLastSimpleListOccupancy(int numberFlight, double occupancyRate) {
 
-		if (isEmpty()) {
-			this.firstNodeOccupancyFlight = this.lastNodeOccupancyFlight = new NodeOccupancyFlight(numberFlight,
-					occupancyRate, null);
-		} else {
+		NodeOccupancyFlight newNode = new NodeOccupancyFlight(numberFlight, occupancyRate, null);
 
-			this.lastNodeOccupancyFlight.setNextNodeOccupancyFlight(
-					new NodeOccupancyFlight(numberFlight, occupancyRate, this.firstNodeOccupancyFlight));
-			this.lastNodeOccupancyFlight = this.lastNodeOccupancyFlight.getNextNodeOccupancyFlight();
-			quantityNodeOccupancyFlight++;
+		if (isEmpty()) {
+			this.firstNodeOccupancyFlight = newNode;
+			this.lastNodeOccupancyFlight = newNode;
+		} else {
+			this.lastNodeOccupancyFlight.setNextNodeOccupancyFlight(newNode);
+			this.lastNodeOccupancyFlight = newNode;
 		}
 
+		quantityNodeOccupancyFlight++;
 	}
 
 	// Metodo que muestra la lista

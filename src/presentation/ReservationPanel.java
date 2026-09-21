@@ -15,11 +15,11 @@ import javax.swing.border.TitledBorder;
 
 public class ReservationPanel extends JPanel {
 
-	public JComboBox<String> cbxFlight;
-	public JTextField tId;
-	public JTextField tName;
-	public JTextField tAge;
-	public JButton btnRegister;
+	private JComboBox<String> cbxFlight;
+	private JTextField tId;
+	private JTextField tName;
+	private JTextField tAge;
+	private JButton btnRegister;
 
 	/**
 	 * Create the panel.
@@ -109,4 +109,46 @@ public class ReservationPanel extends JPanel {
 		tName.setText("");
 		tAge.setText("");
 	}
+
+	public JComboBox<String> getCbxFlight() {
+		return cbxFlight;
+	}
+
+	public void setCbxFlight(JComboBox<String> cbxFlight) {
+		this.cbxFlight = cbxFlight;
+	}
+
+	public JTextField gettId() {
+		return tId;
+	}
+
+	public void settId(JTextField tId) {
+		this.tId = tId;
+	}
+
+	public JTextField gettName() {
+		return tName;
+	}
+
+	public void settName(JTextField tName) {
+		this.tName = tName;
+	}
+
+	public JTextField gettAge() {
+		return tAge;
+	}
+
+	public void settAge(JTextField tAge) {
+		this.tAge = tAge;
+	}
+
+	public JButton getBtnRegister() {
+		return btnRegister;
+	}
+
+	public void setBtnRegister(JButton btnRegister) {
+		this.btnRegister = btnRegister;
+	}
+	
+	
 }
