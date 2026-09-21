@@ -44,32 +44,30 @@ public class DoubleCircleListFlight {
 
 			tailFlight = newNode;
 		}
+		quantityNode++;
 
 	}
 
 	// Metodo que muestra los aviones
 
-	public String showAirplane() {
+	public Flight showAirplaneById(int id) {
 
-		String exit = "";
+		if (!isEmpty()) {
 
-		if (isEmpty()) {
+			NodeDoubleList<Flight> aux = this.headFlight;
 
-			return exit = "No hay aviones en el sistema";
+			do {
+
+				if (aux.getData().getNumberFlight() == id) {
+					return aux.getData();
+				}
+				aux = aux.getNextNode();
+
+			} while (aux != this.headFlight);
 
 		}
 
-		NodeDoubleList<Flight> aux = this.headFlight;
-
-		do {
-
-			exit += aux.getData() + " ";
-
-			aux = aux.getNextNode();
-
-		} while (aux != this.headFlight);
-
-		return exit;
+		return null;
 	}
 
 	// Metodo para navegar entre la lista hacia la derecha
@@ -91,7 +89,7 @@ public class DoubleCircleListFlight {
 	// Metodo para navegar entre la lista hacia la izquierda
 
 	public void changeAirplanePreviousNode() {
-		
+
 		if (this.currentNode == null) {
 			this.currentNode = headFlight;
 		} else {
@@ -99,13 +97,7 @@ public class DoubleCircleListFlight {
 
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	public NodeDoubleList<Flight> getFirtsNodeCircleDoubleList() {
 		return headFlight;
 	}
@@ -137,11 +129,5 @@ public class DoubleCircleListFlight {
 	public void setQuantityNode(int quantityNode) {
 		this.quantityNode = quantityNode;
 	}
-	
-	
-	
-	
-	
-	
 
 }

@@ -3,109 +3,255 @@ package data;
 import domain.NodeDoubleList;
 import domain.Passenger;
 
-public class DoubleListPassenger{
+public class DoubleListPassenger {
 
-    private NodeDoubleList<Passenger>  firstPassenger;
-    private NodeDoubleList<Passenger>  lastPassenger;
-    private int quantityNode;
-    private int maxCapacity;
+	private NodeDoubleList<Passenger> firstPassenger;
+	private NodeDoubleList<Passenger> lastPassenger;
+	private int quantityNode;
+	private int maxCapacity;
 
-    public DoubleListPassenger() {}
-    
-    public DoubleListPassenger(int maxCapacity) {
-        this.firstPassenger = null;
-        this.lastPassenger = null;
-        this.quantityNode = 0;
-        this.maxCapacity = maxCapacity;
-    }
+	public DoubleListPassenger() {
+	}
 
-    public boolean isEmpty() {
-        return firstPassenger == null;
-    }
+	public DoubleListPassenger(int maxCapacity) {
+		this.firstPassenger = null;
+		this.lastPassenger = null;
+		this.quantityNode = 0;
+		this.maxCapacity = maxCapacity;
+	}
 
-    public boolean isFull() {
-        return quantityNode >= maxCapacity;
-    }
+	public boolean isEmpty() {
+		return firstPassenger == null;
+	}
 
-    // insertar manualmente por edad
-    public boolean addOrderedByAge(Passenger passenger) {
-    	
-        if (isFull()) {
-            return false; // por si se excede su capacidad
-        }
+	public boolean isFull() {
+		return quantityNode >= maxCapacity;
+	}
 
-        //Este siempre es null
-        NodeDoubleList<Passenger>  newNode = new NodeDoubleList<Passenger>(passenger, null, null);
-        
-        // verificar que no este vacia
-        if (isEmpty()) {
-        	
-            firstPassenger = newNode;
-            lastPassenger = newNode;
-            quantityNode++;
-            return true;
-        }
+	public void addLast(Passenger passenger) {
 
-        // insertar al inicio segun edad y primero
-        if (passenger.getAge() < firstPassenger.getData().getAge()) {
-            newNode.setNextNode(firstPassenger);
-            firstPassenger.setPreviusNode(newNode);
-            firstPassenger = newNode;
-            quantityNode++;
-            return true;
-        }
+		if (isEmpty()) {
+			this.firstPassenger = this.lastPassenger = new NodeDoubleList<Passenger>(passenger, null, null);
+		} else {
+			NodeDoubleList<Passenger> node = new NodeDoubleList<Passenger>(passenger, this.lastPassenger, null);
+			this.lastPassenger.setNextNode(node);
+			this.lastPassenger = node;
+		}
+		quantityNode++;
+	}
 
-        //  evaluar si va al medio o al final
-        NodeDoubleList<Passenger>  current = firstPassenger;
-        while (current.getNextNode() != null && current.getNextNode().getData().getAge() <= passenger.getAge()) {
-            current = current.getNextNode();
-        }
+	public void orderByNameAndAgeBubble() {
 
-        newNode.setNextNode(current.getNextNode());
-        newNode.setPreviusNode(current);
+		if (isFull())
+			return;
 
-        if (current.getNextNode() != null) {
-            current.getNextNode().setPreviusNode(newNode);
-        } else {
-            lastPassenger = newNode; // al final
-        }
+		if (this.firstPassenger == null || this.firstPassenger.getNextNode() == null)
+			return;
 
-        current.setNextNode(newNode);
-        quantityNode++;
-        return true;
-    }
+		boolean isChange;
 
-    // recorrer de inicio a fin
-    public String showFromStartToEnd() {
-        if (isEmpty()) return "No hay pasajeros registrados";
-        
-        StringBuilder sb = new StringBuilder();
-        NodeDoubleList<Passenger>  current = firstPassenger;
-        while (current != null) {
-            sb.append(current.getData().toString()).append("\n");
-            current = current.getNextNode();
-        }
-        return sb.toString();
-    }
+		do {
+			isChange = false;
+			NodeDoubleList<Passenger> current = this.firstPassenger;
 
-    // recorrer de fin a inicio ya que es circular, se hace para los dos lados
-    public String showFromEndToStart() {
-        if (isEmpty()) return "No hay pasajeros registrados";
+			while (current.getNextNode() != null) {
+				boolean mustSwap = false;
+				// Esto compara si el nombre es mayor o si son iguales
+				if (current.getData().getName().compareTo(current.getNextNode().getData().getName()) > 0) {
+					mustSwap = true;
+				} else if (current.getData().getName().compareTo(current.getNextNode().getData().getName()) == 0) {
+					if (current.getData().getAge() < current.getNextNode().getData().getAge()) {
+						mustSwap = true;
+					}
+				}
 
-        StringBuilder sb = new StringBuilder();
-        NodeDoubleList<Passenger>  current = lastPassenger;
-        while (current != null) {
-            sb.append(current.getData().toString()).append("\n");
-            current = current.getPreviusNode();
-        }
-        return sb.toString();
-    }
+				if (mustSwap) {
 
-    public int getQuantityNode() {
-        return quantityNode;
-    }
+					NodeDoubleList<Passenger> a = current;
+					NodeDoubleList<Passenger> b = current.getNextNode();
+					NodeDoubleList<Passenger> beforeA = a.getPreviusNode();
+					NodeDoubleList<Passenger> afterB = b.getNextNode();
 
-    public NodeDoubleList<Passenger>  getHead() {
-        return firstPassenger;
-    }
+					if (beforeA != null) {
+						beforeA.setNextNode(b);
+					} else {
+						this.firstPassenger = b;
+					}
+
+					b.setPreviusNode(beforeA);
+					b.setNextNode(a);
+					a.setPreviusNode(b);
+
+					a.setNextNode(afterB);
+
+					if (afterB != null) {
+						afterB.setPreviusNode(a);
+					}
+
+					if (afterB == null) {
+						this.lastPassenger = a;
+					}
+
+					current = a;
+				}
+
+				current = current.getNextNode();
+			}
+
+		} while (isChange);
+	}
+
+	public String show() {
+		String exit = " ";
+		NodeDoubleList<Passenger> aux = this.firstPassenger;
+		while (aux != null) {
+			exit += aux.getData() + " ";
+			aux = aux.getNextNode();
+		}
+
+		return exit;
+	}
+
+	// Recorrido de inicio a fin
+	public String showFromStartToEnd() {
+		if (isEmpty())
+			return "No hay pasajeros registrados";
+
+		StringBuilder sb = new StringBuilder();
+		NodeDoubleList<Passenger> current = firstPassenger;
+		while (current != null) {
+			sb.append(current.getData().toString()).append("\n");
+			current = current.getNextNode();
+		}
+		return sb.toString();
+	}
+
+	// Recorrido de fin a inicio
+	public String showFromEndToStart() {
+		if (isEmpty())
+			return "No hay pasajeros registrados";
+
+		StringBuilder sb = new StringBuilder();
+		NodeDoubleList<Passenger> current = lastPassenger;
+		while (current != null) {
+			sb.append(current.getData().toString()).append("\n");
+			current = current.getPreviusNode();
+		}
+		return sb.toString();
+	}
+
+	public int getQuantityNode() {
+		return quantityNode;
+	}
+
+	public NodeDoubleList<Passenger> getHead() {
+		return firstPassenger;
+	}
 }
+
+/**
+ * 
+ * //Ordena por nombre si la edad es la misma public void OrderByName(Passenger
+ * passeger) {
+ * 
+ * }
+ * 
+ * 
+ * // insertar manualmente por edad public boolean addOrderedByAge(Passenger
+ * passenger) {
+ * 
+ * if (isFull()) { return false; // por si se excede su capacidad }
+ * 
+ * //Este siempre es null NodeDoubleList<Passenger> newNode = new
+ * NodeDoubleList<Passenger>(passenger, null, null);
+ * 
+ * // verificar que no este vacia if (isEmpty()) {
+ * 
+ * firstPassenger = newNode; lastPassenger = newNode; quantityNode++; return
+ * true; }
+ * 
+ * 
+ * // insertar al inicio segun edad y primero if (passenger.getAge() <
+ * firstPassenger.getData().getAge()) { newNode.setNextNode(firstPassenger);
+ * firstPassenger.setPreviusNode(newNode); firstPassenger = newNode;
+ * quantityNode++; return true; }
+ * 
+ * // evaluar si va al medio o al final NodeDoubleList<Passenger> current =
+ * firstPassenger; while (current.getNextNode() != null &&
+ * current.getNextNode().getData().getAge() <= passenger.getAge()) { current =
+ * current.getNextNode(); }
+ * 
+ * newNode.setNextNode(current.getNextNode()); newNode.setPreviusNode(current);
+ * 
+ * if(current.getData().getAge() == current.getNextNode().getData().getAge())
+ * OrderByName();
+ * 
+ * if (current.getNextNode() != null) {
+ * current.getNextNode().setPreviusNode(newNode); } else { lastPassenger =
+ * newNode; // al final }
+ * 
+ * current.setNextNode(newNode); quantityNode++; return true; }
+ * 
+ *
+ * 
+ * 
+ */
+
+/**
+ * METODO BURBUJA
+ *
+ * Sirve para ordenar de menor a mayor Nota:En el examen pide ordenarlo de la
+ * manera opuesta
+ *
+ * public static int[] burbble(int array[]) {
+ * 
+ * for (int i = 0; i < array.length; i++) { for (int j = i + 1; j <
+ * array.length; j++) {
+ * 
+ * /** Aqui ordena de menor a mayor Si le cambio el signo ordena de mayor a
+ * menor
+ * 
+ * if (array[i] > array[j]) {
+ * 
+ * changeValue(array, i, j); } } }
+ * 
+ * return array;
+ * 
+ * }
+ * 
+ * 
+ * 
+ * private static void changeValue(int[] array, int i, int j) { int aux =
+ * array[j]; array[j] = array[i]; array[i] = aux; }
+ * 
+ * -----LISTAS ENLADAZADAS-----
+ * 
+ * public void bubbleSortPunteros() { if (head == null || head.next == null)
+ * return;
+ * 
+ * boolean huboIntercambio;
+ * 
+ * do { huboIntercambio = false; Nodo actual = head;
+ * 
+ * while (actual.next != null) { if (actual.dato > actual.next.dato) { //
+ * Guardamos referencias de los nodos involucrados Nodo a = actual; Nodo b =
+ * actual.next; Nodo antesDeA = a.prev; Nodo despuesDeB = b.next;
+ * 
+ * // 1. Conectar el nodo anterior a 'a' con 'b' if (antesDeA != null) {
+ * antesDeA.next = b; } else { head = b; // Si 'a' era la cabeza, ahora la
+ * cabeza es 'b' } b.prev = antesDeA;
+ * 
+ * // 2. Intercambiar los enlaces mutuos entre 'b' y 'a' b.next = a; a.prev = b;
+ * 
+ * // 3. Conectar 'a' con el nodo que iba después de 'b' a.next = despuesDeB; if
+ * (despuesDeB != null) { despuesDeB.prev = a; }
+ * 
+ * // Después del intercambio, 'b' quedó antes que 'a'. // Mantener 'actual'
+ * apuntando a 'a' para seguir avanzando correctamente. actual = a;
+ * huboIntercambio = true; } actual = actual.next; } } while (huboIntercambio);
+ * }
+ * 
+ * 
+ * 
+ * 
+ **/

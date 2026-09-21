@@ -35,4 +35,19 @@ public class LogicFlight {
 		return false;
 	}
 
+	// Valida duplicado y, si no existe, agrega el vuelo a la lista circular.
+	public String addFlight(Flight flight) {
+
+		if (repeatedFlights(flight)) {
+			return "ERROR: Ya existe un vuelo registrado con el número " + flight.getNumberFlight() + ".";
+		}
+
+		list.addLastAirplane(flight);
+		return "Vuelo " + flight.getNumberFlight() + " registrado con éxito.";
+	}
+
+	public DoubleCircleListFlight getFlightList() {
+		return list;
+	}
+
 }
