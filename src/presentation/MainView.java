@@ -23,6 +23,7 @@ public class MainView extends JFrame {
 
 	private JButton btnFlights;
 	private JButton btnReservations;
+	private JButton btnPassengers;
 	private JButton btnTrips;
 	private JButton btnBoarding;
 
@@ -76,6 +77,16 @@ public class MainView extends JFrame {
 		btnReservations.setFocusPainted(false);
 		panelButtons.add(btnReservations);
 
+		btnPassengers = new JButton("Pasajeros");
+		btnPassengers.setPreferredSize(new Dimension(200, 54));
+		btnPassengers.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		btnPassengers.setForeground(new Color(10, 36, 84));
+		btnPassengers.setBackground(new Color(187, 222, 251));
+		btnPassengers.setOpaque(true);
+		btnPassengers.setBorder(new LineBorder(new Color(21, 101, 192), 2));
+		btnPassengers.setFocusPainted(false);
+		panelButtons.add(btnPassengers);
+		
 		btnTrips = new JButton("Mis viajes");
 		btnTrips.setPreferredSize(new Dimension(200, 54));
 		btnTrips.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -147,7 +158,9 @@ public class MainView extends JFrame {
 	public JButton getBtnReservations() {
 		return btnReservations;
 	}
-
+	public JButton getBtnPassengers() {
+	    return btnPassengers;
+	}
 	public JButton getBtnTrips() {
 		return btnTrips;
 	}

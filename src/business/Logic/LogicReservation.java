@@ -102,4 +102,11 @@ public class LogicReservation {
 	public String getPassengersDescending() {
 		return passengerList.showFromEndToStart();
 	}
+
+    public Object[][] getPassengersTable(boolean startToEnd) {
+        if (passengerList == null) {
+            return new Object[0][4];
+        }
+        return passengerList.getTableData(startToEnd);
+    }
 }

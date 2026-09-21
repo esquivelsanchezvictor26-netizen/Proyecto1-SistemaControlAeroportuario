@@ -1,4 +1,6 @@
 package business.controller;
+import presentation.PassengersPanel;
+import presentation.PrioritizedFlightsPanel;
 
 import javax.swing.JOptionPane;
 
@@ -26,6 +28,7 @@ public class ControllerAirport extends Functions {
     private SimpleListReservation listReservation;
     private LogicControlTower controlTower;
     private FilesJson filesJson;
+    private boolean passengersStartToEnd = true;
 
     private MainView mainView;
 
@@ -51,6 +54,7 @@ public class ControllerAirport extends Functions {
         // 3. Registrar eventos de la barra de navegación lateral (MainView)
         mainView.getBtnFlights().addActionListener(e -> showFlightsView());
         mainView.getBtnReservations().addActionListener(e -> showReservationsView());
+        mainView.getBtnPassengers().addActionListener(e -> showPassengersView());
         mainView.getBtnTrips().addActionListener(e -> showTripsView());
         mainView.getBtnBoarding().addActionListener(e -> showBoardingView());
 
@@ -68,22 +72,24 @@ public class ControllerAirport extends Functions {
             logicFlight = new LogicFlight();
             NodeDoubleList<Flight> current = loadedFlights.getFirtsNodeCircleDoubleList();
             do {
+                Flight.updateNextNumber(current.getData().getNumberFlight());   // NUEVO
                 logicFlight.addFlight(current.getData());
                 current = current.getNextNode();
             } while (current != loadedFlights.getFirtsNodeCircleDoubleList());
         } else {
         	// Datos quemados por defecto si el archivo no existe
-        	logicFlight.addFlight(new Flight(101, "San José - Miami", "Boeing 737", 3, true));
-        	logicFlight.addFlight(new Flight(202, "San José - Madrid", "Airbus A350", 5, true));
-        	logicFlight.addFlight(new Flight(303, "San José - Cancún", "Boeing 787", 4, true));
-        	logicFlight.addFlight(new Flight(404, "San José - Bogotá", "Airbus A320", 4, true));
-        	logicFlight.addFlight(new Flight(505, "San José - Ciudad de México", "Boeing 737", 6, true));
-        	logicFlight.addFlight(new Flight(606, "San José - Panamá", "Embraer 190", 3, true));
-        	logicFlight.addFlight(new Flight(707, "San José - Los Ángeles", "Boeing 787", 5, true));
-        	logicFlight.addFlight(new Flight(808, "San José - Lima", "Airbus A320", 4, true));
-        	logicFlight.addFlight(new Flight(909, "San José - Toronto", "Airbus A330", 5, true));
-        	logicFlight.addFlight(new Flight(1010, "San José - Nueva York", "Boeing 777", 6, true));
-            saveFlights();
+        	logicFlight.addFlight(new Flight("San José - Miami", "Boeing 737", 3, true));
+        	logicFlight.addFlight(new Flight("San José - Madrid", "Airbus A350", 5, true));
+        	logicFlight.addFlight(new Flight("San José - Cancún", "Boeing 787", 4, true));
+        	logicFlight.addFlight(new Flight("San José - Bogotá", "Airbus A320", 4, true));
+        	logicFlight.addFlight(new Flight("San José - Ciudad de México", "Boeing 737", 6, true));
+        	logicFlight.addFlight(new Flight("San José - Panamá", "Embraer 190", 3, true));
+        	logicFlight.addFlight(new Flight("San José - Los Ángeles", "Boeing 787", 5, true));
+        	logicFlight.addFlight(new Flight("San José - Lima", "Airbus A320", 4, true));
+        	logicFlight.addFlight(new Flight("San José - Toronto", "Airbus A330", 5, true));
+        	logicFlight.addFlight(new Flight("San José - Nueva York", "Boeing 777", 6, true));
+        	saveFlights();
+        	
         }
 
         // Cargar reservas e historial
@@ -120,14 +126,70 @@ public class ControllerAirport extends Functions {
         v.getBtnPrioritize().addActionListener(e -> {
             controlTower.calculateOccupancyRates(listReservation);
             controlTower.prioritizeFlights();
-            updateFlightDisplay(v);
-            JOptionPane.showMessageDialog(mainView, "Vuelos priorizados por ocupación mediante QuickSort con éxito.");
             saveFlights();
+            showPrioritizedFlightsView();
         });
 
         mainView.setContent(v, "Vuelos Disponibles");
     }
+ // Panel con la tabla de vuelos priorizados
+    public void showPrioritizedFlightsView() {
+        PrioritizedFlightsPanel v = new PrioritizedFlightsPanel();
 
+        v.setData(controlTower.getPrioritizedTableData(listReservation));
+
+        // "Volver a vuelos" crea el panel principal de nuevo, ya con la lista reorganizada:
+        // el vuelo actual es el de mayor prioridad y Anterior/Siguiente siguen el nuevo orden
+        v.getBtnBack().addActionListener(e -> showFlightsView());
+
+        mainView.setContent(v, "Vuelos Priorizados");
+    }
+
+    // Pasajeros por vuelo (tabla)
+    public void showPassengersView() {
+        PassengersPanel v = new PassengersPanel();
+        passengersStartToEnd = true;
+
+        populateFlightComboBox(v.getCbxFlight());
+
+        v.getCbxFlight().addActionListener(e -> updatePassengersTable(v));
+
+        v.getBtnStartToEnd().addActionListener(e -> {
+            passengersStartToEnd = true;
+            updatePassengersTable(v);
+        });
+
+        v.getBtnEndToStart().addActionListener(e -> {
+            passengersStartToEnd = false;
+            updatePassengersTable(v);
+        });
+
+        updatePassengersTable(v);
+
+        mainView.setContent(v, "Pasajeros");
+    }
+
+    private void updatePassengersTable(PassengersPanel v) {
+        String selected = (String) v.getCbxFlight().getSelectedItem();
+        if (selected == null || selected.isEmpty()) {
+            v.getLblInfo().setText("No hay vuelos registrados");
+            v.setData(new Object[0][4]);
+            return;
+        }
+
+        int flightNum = Integer.parseInt(selected.split(" ")[1]);
+        LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
+
+        int capacity = reservation.getFlight().getMaximumCapacity();
+        int registered = reservation.getQuantityPassengersByFlight();
+
+        v.getLblInfo().setText("Capacidad máxima: " + capacity + "   |   Registrados: " + registered
+                + "   |   Disponibles: " + (capacity - registered));
+
+        // La tabla se llena recorriendo la lista doble de pasajeros en la direccion elegida
+        v.setData(reservation.getPassengersTable(passengersStartToEnd));
+    }
+    
     private void updateFlightDisplay(FlightPanel v) {
         DoubleCircleListFlight flightList = logicFlight.getFlightList();
 
