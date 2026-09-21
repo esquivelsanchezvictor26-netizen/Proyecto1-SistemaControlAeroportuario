@@ -1,7 +1,7 @@
 package data;
 
-import business.LogicReservation;
-import domain.NodeSimpleList;
+import business.Logic.LogicReservation;
+import domain.Node.NodeSimpleList;
 
 public class SimpleListReservation {
 

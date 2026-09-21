@@ -1,6 +1,6 @@
 package data;
 
-import domain.NodeOccupancyFlight;
+import domain.Node.NodeOccupancyFlight;
 
 public class SimpleListOccupancy {
 

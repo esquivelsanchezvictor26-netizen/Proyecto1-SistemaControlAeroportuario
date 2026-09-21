@@ -1,4 +1,4 @@
-package data;
+package data.FilesJson;
 
 import java.io.File;
 import java.io.FileReader;
@@ -6,9 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.google.gson.Gson;
+
+import data.BoardingQueue;
+import data.DoubleCircleListFlight;
+import data.DoubleListPassenger;
+import data.StackHistoryTravels;
 import domain.Flight;
-import domain.NodeDoubleList;
-import domain.NodeSimpleList;
+import domain.Node.NodeDoubleList;
+import domain.Node.NodeSimpleList;
 import domain.Passenger;
 
 public class FilesJson {

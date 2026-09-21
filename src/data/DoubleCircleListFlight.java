@@ -1,7 +1,7 @@
 package data;
 
 import domain.Flight;
-import domain.NodeDoubleList;
+import domain.Node.NodeDoubleList;
 
 public class DoubleCircleListFlight {
 
