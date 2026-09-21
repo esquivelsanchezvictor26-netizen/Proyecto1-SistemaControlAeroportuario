@@ -22,316 +22,345 @@ import presentation.TripsPanel;
 
 public class ControllerAirport extends Functions {
 
-    private LogicFlight logicFlight;
-    private SimpleListReservation listReservation;
-    private LogicControlTower controlTower;
-    private FilesJson filesJson;
+	private LogicFlight logicFlight;
+	private SimpleListReservation listReservation;
+	private LogicControlTower controlTower;
+	private FilesJson filesJson;
+	private StackHistoryTravels globalTravelStack;
+	private StackHistoryTravels consultedStack;
 
-    private MainView mainView;
+	private MainView mainView;
 
-    // --- RUTAS DE ARCHIVOS JSON ---
-    private String pathFlights = "flights.json";
-    private String pathReservations = "reservations.json";
-    private String pathTrips = "trips.json";
+	// RUTAS DE ARCHIVOS JSON
+	private String pathFlights = "flights.json"; //Lista Circular Doble de Vuelos
+	private String pathPassenger = "passengers.json"; //Lista Doble de Pasajeros
+	private String pathTripsHistory = "tripsHistory.json";    // Pila principal (Por consultar)
+	private String pathTripsConsulted = "tripsConsulted.json";  // Pila secundaria (Consultados)
+	private String pathBoard = "boardQueue.json"; //Cola de abordaje
 
-    public ControllerAirport() {
-        this.logicFlight = new LogicFlight();
-        this.listReservation = new SimpleListReservation();
-        this.filesJson = new FilesJson();
-        this.mainView = new MainView();
-    }
+	public ControllerAirport() {
+		this.logicFlight = new LogicFlight();
+		this.listReservation = new SimpleListReservation();
+		this.filesJson = new FilesJson();
+		this.globalTravelStack = new StackHistoryTravels();
+		this.consultedStack = new StackHistoryTravels();
+		this.mainView = new MainView();
+	}
 
-    public void init() {
-        // 1. Cargar datos desde JSON
-        loadData();
+	public void init() {
+		// 1. Cargar datos desde JSON
+		loadData();
 
-        // 2. Inicializar la Torre de Control con la lista cargada
-        this.controlTower = new LogicControlTower(logicFlight.getFlightList());
+		// 2. Inicializar la Torre de Control con la lista cargada
+		this.controlTower = new LogicControlTower(logicFlight.getFlightList());
 
-        // 3. Registrar eventos de la barra de navegación lateral (MainView)
-        mainView.getBtnFlights().addActionListener(e -> showFlightsView());
-        mainView.getBtnReservations().addActionListener(e -> showReservationsView());
-        mainView.getBtnTrips().addActionListener(e -> showTripsView());
-        mainView.getBtnBoarding().addActionListener(e -> showBoardingView());
+		// 3. Registrar eventos de la barra de navegación lateral (MainView)
+		mainView.getBtnFlights().addActionListener(e -> showFlightsView());
+		mainView.getBtnReservations().addActionListener(e -> showReservationsView());
+		mainView.getBtnTrips().addActionListener(e -> showTripsView());
+		mainView.getBtnBoarding().addActionListener(e -> showBoardingView());
 
-        // 4. Mostrar la ventana principal
-        mainView.init();
+		// 4. Mostrar la ventana principal
+		mainView.init();
 
-        // 5. Vista por defecto al abrir la aplicación
-        showFlightsView();
-    }
+		// 5. Vista por defecto al abrir la aplicación
+		showFlightsView();
+	}
 
-    private void loadData() {
-        // Cargar vuelos
-        DoubleCircleListFlight loadedFlights = filesJson.readFlights(pathFlights);
-        if (loadedFlights != null && !loadedFlights.isEmpty()) {
-            logicFlight = new LogicFlight();
-            NodeDoubleList<Flight> current = loadedFlights.getFirtsNodeCircleDoubleList();
-            do {
-                logicFlight.addFlight(current.getData());
-                current = current.getNextNode();
-            } while (current != loadedFlights.getFirtsNodeCircleDoubleList());
-        } else {
-        	// Datos quemados por defecto si el archivo no existe
-        	logicFlight.addFlight(new Flight(101, "San José - Miami", "Boeing 737", 3, true));
-        	logicFlight.addFlight(new Flight(202, "San José - Madrid", "Airbus A350", 5, true));
-        	logicFlight.addFlight(new Flight(303, "San José - Cancún", "Boeing 787", 4, true));
-        	logicFlight.addFlight(new Flight(404, "San José - Bogotá", "Airbus A320", 4, true));
-        	logicFlight.addFlight(new Flight(505, "San José - Ciudad de México", "Boeing 737", 6, true));
-        	logicFlight.addFlight(new Flight(606, "San José - Panamá", "Embraer 190", 3, true));
-        	logicFlight.addFlight(new Flight(707, "San José - Los Ángeles", "Boeing 787", 5, true));
-        	logicFlight.addFlight(new Flight(808, "San José - Lima", "Airbus A320", 4, true));
-        	logicFlight.addFlight(new Flight(909, "San José - Toronto", "Airbus A330", 5, true));
-        	logicFlight.addFlight(new Flight(1010, "San José - Nueva York", "Boeing 777", 6, true));
-            saveFlights();
-        }
+	private void loadData() {
+		// Cargar vuelos
+		DoubleCircleListFlight loadedFlights = filesJson.readFlights(pathFlights);
+		if (loadedFlights != null && !loadedFlights.isEmpty()) {
+			logicFlight = new LogicFlight();
+			NodeDoubleList<Flight> current = loadedFlights.getFirtsNodeCircleDoubleList();
+			do {
+				logicFlight.addFlight(current.getData());
+				current = current.getNextNode();
+			} while (current != loadedFlights.getFirtsNodeCircleDoubleList());
+		} else {
+			// Datos quemados por defecto si el archivo no existe
+			logicFlight.addFlight(new Flight(101, "San José - Miami", "Boeing 737", 3, true));
+			logicFlight.addFlight(new Flight(202, "San José - Madrid", "Airbus A350", 5, true));
+			logicFlight.addFlight(new Flight(303, "San José - Cancún", "Boeing 787", 4, true));
+			logicFlight.addFlight(new Flight(404, "San José - Bogotá", "Airbus A320", 4, true));
+			logicFlight.addFlight(new Flight(505, "San José - Ciudad de México", "Boeing 737", 6, true));
+			logicFlight.addFlight(new Flight(606, "San José - Panamá", "Embraer 190", 3, true));
+			logicFlight.addFlight(new Flight(707, "San José - Los Ángeles", "Boeing 787", 5, true));
+			logicFlight.addFlight(new Flight(808, "San José - Lima", "Airbus A320", 4, true));
+			logicFlight.addFlight(new Flight(909, "San José - Toronto", "Airbus A330", 5, true));
+			logicFlight.addFlight(new Flight(1010, "San José - Nueva York", "Boeing 777", 6, true));
+			saveFlights();
+		}
 
-        // Cargar reservas e historial
-        StackHistoryTravels loadedTrips = filesJson.readTravelHistory(pathTrips);
-        // La lectura ya queda lista en memoria
-    }
+		// Cargar las dos pilas al iniciar el sistema
+		StackHistoryTravels loadedPending = filesJson.readTravelHistory(pathTripsHistory);
+		if (loadedPending != null && !loadedPending.isEmpty()) {
+			this.globalTravelStack = loadedPending;
+		}
 
-    private void saveFlights() {
-        filesJson.writeFlights(logicFlight.getFlightList(), pathFlights);
-    }
+		StackHistoryTravels loadedConsulted = filesJson.readTravelHistory(pathTripsConsulted);
+		if (loadedConsulted != null && !loadedConsulted.isEmpty()) {
+			this.consultedStack = loadedConsulted;
+		}
+	}
 
-    // ==========================================
-    // VISTA 1: VUELOS DISPONIBLES (Navegación Circular)
-    // ==========================================
-    public void showFlightsView() {
-        FlightPanel v = new FlightPanel();
+	private void saveFlights() {
+		filesJson.writeFlights(logicFlight.getFlightList(), pathFlights);
+	}
 
-        // Mostrar el vuelo actual
-        updateFlightDisplay(v);
+	// VISTA 1: VUELOS DISPONIBLES (Navegación Circular)
+	public void showFlightsView() {
+		FlightPanel v = new FlightPanel();
 
-        // Botón "Anterior" (Navegación circular a la izquierda)
-        v.getBtnPrevious().addActionListener(e -> {
-            logicFlight.getFlightList().changeAirplanePreviousNode();
-            updateFlightDisplay(v);
-        });
+		// Mostrar el vuelo actual
+		updateFlightDisplay(v);
 
-        // Botón "Siguiente" (Navegación circular a la derecha)
-        v.getBtnNext().addActionListener(e -> {
-            logicFlight.getFlightList().changeAirplanetoNext();
-            updateFlightDisplay(v);
-        });
+		// Botón "Anterior" (Navegación circular a la izquierda)
+		v.getBtnPrevious().addActionListener(e -> {
+			logicFlight.getFlightList().changeAirplanePreviousNode();
+			updateFlightDisplay(v);
+		});
 
-        // Botón "Priorizar Vuelos" (QuickSort Torre de Control)
-        v.getBtnPrioritize().addActionListener(e -> {
-            controlTower.calculateOccupancyRates(listReservation);
-            controlTower.prioritizeFlights();
-            updateFlightDisplay(v);
-            JOptionPane.showMessageDialog(mainView, "Vuelos priorizados por ocupación mediante QuickSort con éxito.");
-            saveFlights();
-        });
+		// Botón "Siguiente" (Navegación circular a la derecha)
+		v.getBtnNext().addActionListener(e -> {
+			logicFlight.getFlightList().changeAirplanetoNext();
+			updateFlightDisplay(v);
+		});
 
-        mainView.setContent(v, "Vuelos Disponibles");
-    }
+		// Botón "Priorizar Vuelos" (QuickSort Torre de Control)
+		v.getBtnPrioritize().addActionListener(e -> {
+			controlTower.calculateOccupancyRates(listReservation);
+			controlTower.prioritizeFlights();
+			updateFlightDisplay(v);
+			JOptionPane.showMessageDialog(mainView, "Vuelos priorizados por ocupación mediante QuickSort con éxito.");
+			saveFlights();
+		});
 
-    private void updateFlightDisplay(FlightPanel v) {
-        DoubleCircleListFlight flightList = logicFlight.getFlightList();
+		mainView.setContent(v, "Vuelos Disponibles");
+	}
 
-        if (flightList.isEmpty()) {
-            v.getLblNumber().setText("-");
-            v.getLblRoute().setText("Sin vuelos registrados");
-            v.getLblType().setText("-");
-            v.getLblCapacity().setText("0");
-            v.getLblAvailable().setText("0");
-            v.getLblStatus().setText("-");
-            return;
-        }
+	private void updateFlightDisplay(FlightPanel v) {
+		DoubleCircleListFlight flightList = logicFlight.getFlightList();
 
-        if (flightList.getCurrentNode() == null) {
-            flightList.setCurrentNode(flightList.getFirtsNodeCircleDoubleList());
-        }
+		if (flightList.isEmpty()) {
+			v.getLblNumber().setText("-");
+			v.getLblRoute().setText("Sin vuelos registrados");
+			v.getLblType().setText("-");
+			v.getLblCapacity().setText("0");
+			v.getLblAvailable().setText("0");
+			v.getLblStatus().setText("-");
+			return;
+		}
 
-        Flight f = flightList.getCurrentNode().getData();
+		if (flightList.getCurrentNode() == null) {
+			flightList.setCurrentNode(flightList.getFirtsNodeCircleDoubleList());
+		}
 
-        // Buscar cuántas reservas tiene este vuelo
-        int occupied = getPassengerCountForFlight(f.getNumberFlight());
-        int available = f.getMaximumCapacity() - occupied;
+		Flight f = flightList.getCurrentNode().getData();
 
-        v.getLblNumber().setText(String.valueOf(f.getNumberFlight()));
-        v.getLblRoute().setText(f.getRoute());
-        v.getLblType().setText(f.getAircraftType());
-        v.getLblCapacity().setText(String.valueOf(f.getMaximumCapacity()));
-        v.getLblAvailable().setText(String.valueOf(available));
-        v.getLblStatus().setText(f.isStatusAircraft() ? "Disponible" : "Inactivo");
-    }
+		// Buscar cuántas reservas tiene este vuelo
+		int occupied = getPassengerCountForFlight(f.getNumberFlight());
+		int available = f.getMaximumCapacity() - occupied;
 
-    // ==========================================
-    // VISTA 2: RESERVAR ASIENTOS
-    // ==========================================
-    public void showReservationsView() {
-        ReservationPanel v = new ReservationPanel();
+		v.getLblNumber().setText(String.valueOf(f.getNumberFlight()));
+		v.getLblRoute().setText(f.getRoute());
+		v.getLblType().setText(f.getAircraftType());
+		v.getLblCapacity().setText(String.valueOf(f.getMaximumCapacity()));
+		v.getLblAvailable().setText(String.valueOf(available));
+		//Evalua el estado dinámicamente según los espacios disponibles
+		if (!f.isStatusAircraft()) {
+			v.getLblStatus().setText("Inactivo");
+		} else if (available <= 0) {
+			v.getLblStatus().setText("Agotado");
+		} else {
+			v.getLblStatus().setText("Disponible");
+		}
+	}
 
-        // Llenar ComboBox con los vuelos disponibles
-        populateFlightComboBox(v.getCbxFlight());
+	// VISTA 2: RESERVAR ASIENTOS
+	public void showReservationsView() {
+		ReservationPanel v = new ReservationPanel();
 
-        v.getBtnRegister().addActionListener(e -> {
-            String selected = (String) v.getCbxFlight().getSelectedItem();
-            if (selected == null || selected.isEmpty()) {
-                JOptionPane.showMessageDialog(mainView, "Debe seleccionar un vuelo válido.");
-                return;
-            }
+		populateFlightComboBox(v.getCbxFlight());
 
-            // Extraer el número de vuelo de la cadena seleccionada "Vuelo 101 - Ruta..."
-            int flightNum = Integer.parseInt(selected.split(" ")[1]);
+		v.getBtnRegister().addActionListener(e -> {
+			String selected = (String) v.getCbxFlight().getSelectedItem();
+			if (selected == null || selected.isEmpty()) {
+				JOptionPane.showMessageDialog(mainView, "Debe seleccionar un vuelo válido.");
+				return;
+			}
 
-            String id = v.gettId().getText().trim();
-            String name = v.gettName().getText().trim();
-            String ageStr = v.gettAge().getText().trim();
+			int flightNum = Integer.parseInt(selected.split(" ")[1]);
 
-            if (id.isEmpty() || name.isEmpty() || ageStr.isEmpty()) {
-                JOptionPane.showMessageDialog(mainView, "Por favor complete todos los campos.");
-                return;
-            }
+			String id = v.gettId().getText().trim();
+			String name = v.gettName().getText().trim();
+			String ageStr = v.gettAge().getText().trim();
 
-            try {
-                int age = Integer.parseInt(ageStr);
+			if (id.isEmpty() || name.isEmpty() || ageStr.isEmpty()) {
+				JOptionPane.showMessageDialog(mainView, "Por favor complete todos los campos.");
+				return;
+			}
 
-                // Obtener o crear la reserva para este vuelo
-                LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
+			try {
+				int age = Integer.parseInt(ageStr);
 
-                // Intentar realizar la reserva
-                String result = reservation.reserveSeat(id, name, age);
-                JOptionPane.showMessageDialog(mainView, result);
+				LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
 
-                if (!result.startsWith("ERROR")) {
-                    v.clearForm();
-                    // Guardar en persistencia JSON
-                    filesJson.writePassengers(getPassengerListForFlight(flightNum), "passengers_flight_" + flightNum + ".json");
-                }
+				// 1. Realizar la reserva
+				String result = reservation.reserveSeat(id, name, age, globalTravelStack);
+				JOptionPane.showMessageDialog(mainView, result);
 
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(mainView, "La edad debe ser un número entero válido.");
-            }
-        });
+				if (!result.startsWith("ERROR")) {
+					v.clearForm();
 
-        mainView.setContent(v, "Registrar Reserva");
-    }
+					// 1. Guardar pasajeros del vuelo específico
+					String fileName = "vuelo" + flightNum + ".json";
+					filesJson.writePassengers(reservation.getPassengerList(), fileName);
 
-    // ==========================================
-    // VISTA 3: MIS VIAJES (Pila LIFO)
-    // ==========================================
-    public void showTripsView() {
-        TripsPanel v = new TripsPanel();
+					// 2. Guardar el estado de la pila global
+					// Guardar únicamente la pila de pendientes cuando se agrega una nueva reserva
+					filesJson.writeTravelHistory(globalTravelStack, pathTripsHistory);
+				}
 
-        // Recorrer las reservas y mostrar el historial acumulado en la Pila
-        StringBuilder sb = new StringBuilder();
-        NodeSimpleList<LogicReservation> currentRes = listReservation.getFirstReservation();
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(mainView, "La edad debe ser un número entero válido.");
+			}
+		});
 
-        while (currentRes != null) {
-            LogicReservation reservation = currentRes.getData();
-            sb.append("--- VUELO ").append(reservation.getFlight().getNumberFlight()).append(" (")
-              .append(reservation.getFlight().getRoute()).append(") ---\n");
+		mainView.setContent(v, "Registrar Reserva");
+	}
 
-            sb.append(reservation.getPassengersAscending()).append("\n");
-            currentRes = currentRes.getNextNode();
-        }
+	// VISTA 3: MIS VIAJES (Pila LIFO)
+	public void showTripsView() {
+		TripsPanel v = new TripsPanel();
 
-        if (sb.length() == 0) {
-            v.getTaTrips().setText("No hay reservas o viajes confirmados en la pila.");
-        } else {
-            v.getTaTrips().setText(sb.toString());
-        }
+		// Actualizar el estado visual de ambas pilas
+		updateTripsDisplay(v);
 
-        mainView.setContent(v, "Mis Viajes");
-    }
+		// Evento del botón Consultar
+		v.getBtnConsult().addActionListener(e -> {
+			if (globalTravelStack.isEmpty()) {
+				JOptionPane.showMessageDialog(mainView, "No hay reservas pendientes por consultar.");
+				return;
+			}
 
-    // ==========================================
-    // VISTA 4: COLA DE ABORDAJE (FIFO)
-    // ==========================================
-    public void showBoardingView() {
-        BoardingPanel v = new BoardingPanel();
+			// 1. Desapilar de la pila principal (LIFO)
+			String consultedRecord = globalTravelStack.pop();
 
-        populateFlightComboBox(v.getCbxFlight());
+			// 2. Apilar en la pila de consultados (LIFO)
+			consultedStack.push(consultedRecord);
 
-        // Al cambiar de vuelo en el ComboBox, refrescar las áreas de texto de la cola
-        v.getCbxFlight().addActionListener(e -> updateBoardingDisplay(v));
+			// 3. Guardar el estado actualizado de AMBAS pilas en sus respectivos JSON
+			filesJson.writeTravelHistory(globalTravelStack, pathTripsHistory);
+			filesJson.writeTravelHistory(consultedStack, pathTripsConsulted);
 
-        // Actualización inicial
-        updateBoardingDisplay(v);
+			// 4. Mostrar información al usuario
+			JOptionPane.showMessageDialog(mainView, "INFORMACIÓN DE RESERVA CONSULTADA:\n\n" + consultedRecord,
+					"Detalle de Consulta", JOptionPane.INFORMATION_MESSAGE);
 
-        // Botón "Abordar siguiente" (Saca de la cola FIFO)
-        v.getBtnBoardNext().addActionListener(e -> {
-            String selected = (String) v.getCbxFlight().getSelectedItem();
-            if (selected == null || selected.isEmpty()) return;
+			// 5. Refrescar los dos JTextArea de la interfaz
+			updateTripsDisplay(v);
+		});
 
-            int flightNum = Integer.parseInt(selected.split(" ")[1]);
-            LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
+		mainView.setContent(v, "Mis Viajes");
+	}
 
-            String msg = reservation.boardNextPassenger();
-            JOptionPane.showMessageDialog(mainView, msg);
+	private void updateTripsDisplay(TripsPanel v) {
+		// Cuadro Izquierdo: Pila principal por consultar
+		v.getTaPendingTrips().setText(globalTravelStack.showStack());
 
-            updateBoardingDisplay(v);
-        });
+		// Cuadro Derecho: Pila de consultados
+		v.getTaConsultedTrips().setText(consultedStack.showStack());
+	}
 
-        mainView.setContent(v, "Cola de Abordaje");
-    }
+	// VISTA 4: COLA DE ABORDAJE (FIFO)
+	public void showBoardingView() {
+		BoardingPanel v = new BoardingPanel();
 
-    private void updateBoardingDisplay(BoardingPanel v) {
-        String selected = (String) v.getCbxFlight().getSelectedItem();
-        if (selected == null || selected.isEmpty()) {
-            v.getTaQueue().setText("Sin datos");
-            return;
-        }
+		populateFlightComboBox(v.getCbxFlight());
 
-        int flightNum = Integer.parseInt(selected.split(" ")[1]);
-        LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
+		// Al cambiar de vuelo en el ComboBox, refrescar las áreas de texto de la cola
+		v.getCbxFlight().addActionListener(e -> updateBoardingDisplay(v));
 
-        // Mostrar pasajeros registrados esperando abordar
-        v.getTaQueue().setText(reservation.getPassengersAscending());
-    }
+		// Actualización inicial
+		updateBoardingDisplay(v);
 
-    // ==========================================
-    // MÉTODOS AUXILIARES DE BÚSQUEDA Y NAVEGACIÓN
-    // ==========================================
+		// Botón "Abordar siguiente" (Saca de la cola FIFO)
+		v.getBtnBoardNext().addActionListener(e -> {
+			String selected = (String) v.getCbxFlight().getSelectedItem();
+			if (selected == null || selected.isEmpty()) return;
 
-    private void populateFlightComboBox(javax.swing.JComboBox<String> cbx) {
-        clearComboBox(cbx);
-        DoubleCircleListFlight flightList = logicFlight.getFlightList();
+			int flightNum = Integer.parseInt(selected.split(" ")[1]);
+			LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
 
-        if (flightList.isEmpty()) return;
+			String msg = reservation.boardNextPassenger();
+			JOptionPane.showMessageDialog(mainView, msg);
 
-        NodeDoubleList<Flight> current = flightList.getFirtsNodeCircleDoubleList();
-        do {
-            Flight f = current.getData();
-            cbx.addItem("Vuelo " + f.getNumberFlight() + " - " + f.getRoute());
-            current = current.getNextNode();
-        } while (current != flightList.getFirtsNodeCircleDoubleList());
-    }
+			updateBoardingDisplay(v);
+		});
 
-    private LogicReservation getOrCreateReservationForFlight(int flightNumber) {
-        NodeSimpleList<LogicReservation> current = listReservation.getFirstReservation();
+		mainView.setContent(v, "Cola de Abordaje");
+	}
 
-        while (current != null) {
-            if (current.getData().getFlight().getNumberFlight() == flightNumber) {
-                return current.getData();
-            }
-            current = current.getNextNode();
-        }
+	private void updateBoardingDisplay(BoardingPanel v) {
+		String selected = (String) v.getCbxFlight().getSelectedItem();
+		if (selected == null || selected.isEmpty()) {
+			v.getTaQueue().setText("Sin datos");
+			return;
+		}
 
-        // Si no existe la reserva para este vuelo, se crea e inserta en la lista simple
-        Flight f = logicFlight.getFlightList().showAirplaneById(flightNumber);
-        LogicReservation newReservation = new LogicReservation(f);
-        listReservation.saveElementLast(newReservation);
-        return newReservation;
-    }
+		int flightNum = Integer.parseInt(selected.split(" ")[1]);
+		LogicReservation reservation = getOrCreateReservationForFlight(flightNum);
 
-    private int getPassengerCountForFlight(int flightNumber) {
-        NodeSimpleList<LogicReservation> current = listReservation.getFirstReservation();
-        while (current != null) {
-            if (current.getData().getFlight().getNumberFlight() == flightNumber) {
-                return current.getData().getQuantityPassengersByFlight();
-            }
-            current = current.getNextNode();
-        }
-        return 0;
-    }
+		// Mostrar pasajeros registrados esperando abordar
+		v.getTaQueue().setText(reservation.getPassengersAscending());
+	}
 
-    private DoubleListPassenger getPassengerListForFlight(int flightNumber) {
-        LogicReservation res = getOrCreateReservationForFlight(flightNumber);
-        return res != null ? null : null; // Se gestiona directo dentro de LogicReservation
-    }
+	// MÉTODOS AUXILIARES DE BÚSQUEDA Y NAVEGACIÓ
+	private void populateFlightComboBox(javax.swing.JComboBox<String> cbx) {
+		clearComboBox(cbx);
+		DoubleCircleListFlight flightList = logicFlight.getFlightList();
+
+		if (flightList.isEmpty()) return;
+
+		NodeDoubleList<Flight> current = flightList.getFirtsNodeCircleDoubleList();
+		do {
+			Flight f = current.getData();
+			cbx.addItem("Vuelo " + f.getNumberFlight() + " - " + f.getRoute());
+			current = current.getNextNode();
+		} while (current != flightList.getFirtsNodeCircleDoubleList());
+	}
+
+	private LogicReservation getOrCreateReservationForFlight(int flightNumber) {
+		NodeSimpleList<LogicReservation> current = listReservation.getFirstReservation();
+
+		while (current != null) {
+			if (current.getData().getFlight().getNumberFlight() == flightNumber) {
+				return current.getData();
+			}
+			current = current.getNextNode();
+		}
+
+		// Si no existe la reserva para este vuelo, se crea e inserta en la lista simple
+		Flight f = logicFlight.getFlightList().showAirplaneById(flightNumber);
+		LogicReservation newReservation = new LogicReservation(f);
+		listReservation.saveElementLast(newReservation);
+		return newReservation;
+	}
+
+	private int getPassengerCountForFlight(int flightNumber) {
+		NodeSimpleList<LogicReservation> current = listReservation.getFirstReservation();
+		while (current != null) {
+			if (current.getData().getFlight().getNumberFlight() == flightNumber) {
+				return current.getData().getQuantityPassengersByFlight();
+			}
+			current = current.getNextNode();
+		}
+		return 0;
+	}
+
+	private DoubleListPassenger getPassengerListForFlight(int flightNumber) {
+		LogicReservation res = getOrCreateReservationForFlight(flightNumber);
+		return res != null ? null : null; // Se gestiona directo dentro de LogicReservation
+	}
 }
