@@ -123,7 +123,6 @@ public class FilesJson {
 		return queue;
 	}
 
-
 	//METODOS PARA PILAS
 	public void writeTravelHistory(StackHistoryTravels stack, String address) {
 		if (stack == null || stack.isEmpty()) {
@@ -148,6 +147,7 @@ public class FilesJson {
 		String[] array = readArrayFromJson(address, String[].class);
 
 		if (array != null) {
+			// Insertar de atrás hacia adelante para preservar el tope original (LIFO)
 			int index = array.length - 1;
 			while (index >= 0) {
 				stack.push(array[index]);

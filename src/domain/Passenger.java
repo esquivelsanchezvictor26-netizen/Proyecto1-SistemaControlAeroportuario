@@ -38,6 +38,6 @@ public class Passenger {
 
     @Override
     public String toString() {
-        return "ID= " + id + " Nombre= " + name + "Edad= " + age ;
+        return "ID: " + id + ", Nombre: " + name + ", Edad: " + age ;
     }
 }

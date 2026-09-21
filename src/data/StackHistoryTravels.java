@@ -10,7 +10,6 @@ public class StackHistoryTravels {
 	public StackHistoryTravels() {
 		this.top = null;
 		this.size = 0;
-		// se quitó el campo "listReservation" que no se usaba en ningún lado
 	}
 
 	public boolean isEmpty() {
@@ -26,16 +25,36 @@ public class StackHistoryTravels {
 		this.size++;
 	}
 
-	// Muestra en el orden de entrada (recursividad, igual que ya lo tenías)
-	public void showInOrderOfEntry() {
-		showRecursively(this.top);
+	// Desapila (Cambia la cabeza)
+	public String pop() {
+		if (isEmpty()) {
+			return null;
+		}
+		String data = this.top.getData();
+		this.top = this.top.getNextNode();
+		this.size--;
+		return data;
 	}
 
-	private String showRecursively(NodeSimpleList<String> node) {
-	    if (node == null) {
-	        return "";
-	    }
-	    return showRecursively(node.getNextNode()) + node.getData() + "\n";
+	// Muestra la cabeza sin desapilar
+	public String peek() {
+		if (isEmpty()) {
+			return null;
+		}
+		return this.top.getData();
+	}
+
+	public String showStack() {
+		if (isEmpty()) {
+			return "No hay registros disponibles en la pila.";
+		}
+		String text = "";
+		NodeSimpleList<String> current = this.top;
+		while (current != null) {
+			text += current.getData() + "\n";
+			current = current.getNextNode();
+		}
+		return text;
 	}
 
 	public NodeSimpleList<String> getTop() {
