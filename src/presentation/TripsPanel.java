@@ -15,7 +15,7 @@ import javax.swing.border.TitledBorder;
 
 public class TripsPanel extends JPanel {
 
-	public JTextArea taTrips;
+	private JTextArea taTrips;
 
 	/**
 	 * Create the panel.
@@ -42,5 +42,13 @@ public class TripsPanel extends JPanel {
 		taTrips.setFont(new Font("Consolas", Font.PLAIN, 16));
 		taTrips.setMargin(new Insets(10, 12, 10, 12));
 		scrollPane.setViewportView(taTrips);
+	}
+
+	public JTextArea getTaTrips() {
+		return taTrips;
+	}
+
+	public void setTaTrips(JTextArea taTrips) {
+		this.taTrips = taTrips;
 	}
 }
