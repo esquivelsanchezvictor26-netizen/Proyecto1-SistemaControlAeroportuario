@@ -4,67 +4,71 @@ import domain.Node.NodeOccupancyFlight;
 
 public class SimpleListOccupancy {
 
-	NodeOccupancyFlight firstNodeOccupancyFlight;
-	NodeOccupancyFlight lastNodeOccupancyFlight;
-	int quantityNodeOccupancyFlight;
+    private NodeOccupancyFlight firstNodeOccupancyFlight;
+    private NodeOccupancyFlight lastNodeOccupancyFlight;
+    private int quantityNodeOccupancyFlight;
 
-	public SimpleListOccupancy() {
+    public SimpleListOccupancy() {
+        this.firstNodeOccupancyFlight = null;
+        this.lastNodeOccupancyFlight = null;
+        this.quantityNodeOccupancyFlight = 0;
+    }
 
-		this.firstNodeOccupancyFlight = null;
-		this.lastNodeOccupancyFlight = null;
-		this.quantityNodeOccupancyFlight = 0;
-	}
+    // Método que verifica si la lista está vacía
+    public boolean isEmpty() {
+        return this.firstNodeOccupancyFlight == null && this.lastNodeOccupancyFlight == null;
+    }
 
-	// Metodo que verifica si la lista esta vacia
-	public boolean isEmpty() {
-		return this.firstNodeOccupancyFlight == null && this.lastNodeOccupancyFlight == null;
-	}
+    // Método que añade al último de la lista
+    public void addLastSimpleListOccupancy(int numberFlight, double occupancyRate) {
+        NodeOccupancyFlight newNode = new NodeOccupancyFlight(numberFlight, occupancyRate, null);
 
-	// Metodo que aÃ±ade al ultimo de la lista
-	public void addLastSimpleListOccupancy(int numberFlight, double occupancyRate) {
+        if (isEmpty()) {
+            this.firstNodeOccupancyFlight = newNode;
+            this.lastNodeOccupancyFlight = newNode;
+        } else {
+            this.lastNodeOccupancyFlight.setNextNodeOccupancyFlight(newNode);
+            this.lastNodeOccupancyFlight = newNode;
+        }
 
-		NodeOccupancyFlight newNode = new NodeOccupancyFlight(numberFlight, occupancyRate, null);
+        quantityNodeOccupancyFlight++;
+    }
 
-		if (isEmpty()) {
-			this.firstNodeOccupancyFlight = newNode;
-			this.lastNodeOccupancyFlight = newNode;
-		} else {
-			this.lastNodeOccupancyFlight.setNextNodeOccupancyFlight(newNode);
-			this.lastNodeOccupancyFlight = newNode;
-		}
+    // Método que muestra la lista
+    public String getAllOccupancy() {
+        String exit = "";
+        NodeOccupancyFlight aux = this.firstNodeOccupancyFlight;
 
-		quantityNodeOccupancyFlight++;
-	}
+        while (aux != null) {
+            exit += aux.getOccupancyRate() + " ";
+            aux = aux.getNextNodeOccupancyFlight();
+        }
 
-	// Metodo que muestra la lista
-	public String getAllOccupancy() {
+        return exit;
+    }
 
-		String exit = "";
+    // Método corregido: busca la ocupación según el número de vuelo recorriendo NodeOccupancyFlight
+    public double getOccupancyByNumberFlight(int numberFlight) {
+        if (isEmpty()) {
+            return 0.0;
+        }
 
-		NodeOccupancyFlight aux = this.firstNodeOccupancyFlight;
+        NodeOccupancyFlight current = this.firstNodeOccupancyFlight;
+        while (current != null) {
+            if (current.getNumberFlight() == numberFlight) {
+                return current.getOccupancyRate();
+            }
+            current = current.getNextNodeOccupancyFlight();
+        }
 
-		while (aux != null) {
+        return 0.0;
+    }
 
-			exit += aux.getOccupancyRate() + " ";
-			aux = aux.getNextNodeOccupancyFlight();
-		}
+    public NodeOccupancyFlight getFirstNodeOccupancyFlight() {
+        return firstNodeOccupancyFlight;
+    }
 
-		return exit;
-	}
-
-	// buscar ocupacion por numero de vuelo
-	public double getOccupancyByNumberFlight(int numberFlight) {
-
-		NodeOccupancyFlight aux = this.firstNodeOccupancyFlight;
-
-		while (aux != null) {
-			if (aux.getNumberFlight() == numberFlight) {
-
-				return aux.getOccupancyRate();
-			}
-
-			aux = aux.getNextNodeOccupancyFlight();
-		}
-		return 0.0;
-	}
+    public int getQuantityNodeOccupancyFlight() {
+        return quantityNodeOccupancyFlight;
+    }
 }

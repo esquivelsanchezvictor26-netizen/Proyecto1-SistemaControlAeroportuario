@@ -1,4 +1,5 @@
 package presentation;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,15 +17,14 @@ import javax.swing.border.TitledBorder;
 
 public class FlightPanel extends JPanel {
 
-
 	private JLabel lblNumber;
 	private JLabel lblRoute;
 	private JLabel lblType;
 	private JLabel lblCapacity;
+	private JLabel lblReserved;
 	private JLabel lblAvailable;
 	private JLabel lblStatus;
 
-	
 	private JButton btnPrevious;
 	private JButton btnNext;
 	private JButton btnPrioritize;
@@ -83,6 +83,17 @@ public class FlightPanel extends JPanel {
 		lblCapacity.setForeground(new Color(30, 41, 59));
 		lblCapacity.setFont(new Font("Segoe UI", Font.BOLD, 22));
 		panelCard.add(lblCapacity);
+
+		// --- ESPACIOS RESERVADOS ---
+		JLabel lblReservedTitle = new JLabel("Espacios reservados");
+		lblReservedTitle.setForeground(new Color(84, 98, 120));
+		lblReservedTitle.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		panelCard.add(lblReservedTitle);
+
+		lblReserved = new JLabel("-"); // Asignación directa a la variable de instancia
+		lblReserved.setForeground(new Color(30, 41, 59));
+		lblReserved.setFont(new Font("Segoe UI", Font.BOLD, 22));
+		panelCard.add(lblReserved);
 
 		JLabel lblAvailableTitle = new JLabel("Espacios disponibles");
 		lblAvailableTitle.setForeground(new Color(84, 98, 120));
@@ -172,6 +183,14 @@ public class FlightPanel extends JPanel {
 		this.lblCapacity = lblCapacity;
 	}
 
+	public JLabel getLblReserved() {
+		return lblReserved;
+	}
+
+	public void setLblReserved(JLabel lblReserved) {
+		this.lblReserved = lblReserved;
+	}
+
 	public JLabel getLblAvailable() {
 		return lblAvailable;
 	}
@@ -211,6 +230,4 @@ public class FlightPanel extends JPanel {
 	public void setBtnPrioritize(JButton btnPrioritize) {
 		this.btnPrioritize = btnPrioritize;
 	}
-	
-	
 }

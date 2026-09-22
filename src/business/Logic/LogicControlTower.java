@@ -19,10 +19,10 @@ public class LogicControlTower {
 
     // Método para calcular el porcentaje de ocupación de cada vuelo
     public void calculateOccupancyRates(SimpleListReservation listReservation) {
+        // Reiniciar la lista de ocupación antes de calcular
         this.listOccupancy = new SimpleListOccupancy();
 
         if (this.flight == null || this.flight.isEmpty()) {
-            System.out.println("No hay vuelos registrados");
             return;
         }
 
@@ -30,27 +30,16 @@ public class LogicControlTower {
 
         do {
             Flight currentFlight = aux.getData();
-            NodeSimpleList<LogicReservation> currentReservation = listReservation.getFirstReservation();
-            boolean found = false;
+            int passengers = getPassengerCountForFlight(currentFlight.getNumberFlight(), listReservation);
+            int capacity = currentFlight.getMaximumCapacity();
 
-            while (currentReservation != null) {
-                LogicReservation reservation = currentReservation.getData();
-
-                if (currentFlight.getNumberFlight() == reservation.getFlight().getNumberFlight()) {
-                    int capacity = currentFlight.getMaximumCapacity();
-                    int passengers = reservation.getQuantityPassengersByFlight();
-                    double occupancyRate = ((double) passengers / capacity) * 100;
-
-                    listOccupancy.addLastSimpleListOccupancy(currentFlight.getNumberFlight(), occupancyRate);
-                    found = true;
-                    break;
-                }
-                currentReservation = currentReservation.getNextNode();
+            double occupancyRate = 0.0;
+            if (capacity > 0) {
+                // Casteo a double para evitar que la división de enteros resulte en 0
+                occupancyRate = ((double) passengers / (double) capacity) * 100.0;
             }
 
-            if (!found) {
-                listOccupancy.addLastSimpleListOccupancy(currentFlight.getNumberFlight(), 0.0);
-            }
+            listOccupancy.addLastSimpleListOccupancy(currentFlight.getNumberFlight(), occupancyRate);
 
             aux = aux.getNextNode();
         } while (aux != this.flight.getFirtsNodeCircleDoubleList());
@@ -58,26 +47,30 @@ public class LogicControlTower {
 
     public void prioritizeFlights() {
         if (this.flight == null || this.flight.isEmpty()) {
-            System.out.println("No hay vuelos registrados para priorizar.");
             return;
         }
 
         NodeDoubleList<Flight> head = this.flight.getFirtsNodeCircleDoubleList();
         NodeDoubleList<Flight> tail = this.flight.getLastNodeCircleDoubleList();
 
+        // 1. Convertir la lista circular a lista doble lineal temporalmente
         tail.setNextNode(null);
         head.setPreviusNode(null);
 
+        // 2. Aplicar QuickSort
         NodeDoubleList<Flight> newHead = orderingFlighByOcuppationQuickSort(head, listOccupancy);
 
+        // 3. Buscar el último nodo tras el ordenamiento
         NodeDoubleList<Flight> newTail = newHead;
         while (newTail.getNextNode() != null) {
             newTail = newTail.getNextNode();
         }
 
+        // 4. Volver a enlazar circularmente
         newTail.setNextNode(newHead);
         newHead.setPreviusNode(newTail);
 
+        // 5. Actualizar los nodos de la lista original
         this.flight.setFirtsNodeCircleDoubleList(newHead);
         this.flight.setLastNodeCircleDoubleList(newTail);
         this.flight.setCurrentNode(newHead);
@@ -167,11 +160,13 @@ public class LogicControlTower {
         }
     }
 
- // Devuelve la matriz con los datos de vuelos ordenados por prioridad para mostrar en el JTable
     public Object[][] getPrioritizedTableData(SimpleListReservation listReservation) {
         if (flight == null || flight.isEmpty()) {
             return new Object[0][7];
         }
+
+        // 1. Recalcular ocupación antes de popular la tabla
+        calculateOccupancyRates(listReservation);
 
         int count = 0;
         NodeDoubleList<Flight> curr = flight.getFirtsNodeCircleDoubleList();
@@ -186,17 +181,11 @@ public class LogicControlTower {
 
         do {
             Flight f = curr.getData();
-            int reservations = 0;
 
-            NodeSimpleList<LogicReservation> resNode = listReservation.getFirstReservation();
-            while (resNode != null) {
-                if (resNode.getData().getFlight().getNumberFlight() == f.getNumberFlight()) {
-                    reservations = resNode.getData().getQuantityPassengersByFlight();
-                    break;
-                }
-                resNode = resNode.getNextNode();
-            }
+            // 2. Obtener reservas
+            int reservations = getPassengerCountForFlight(f.getNumberFlight(), listReservation);
 
+            // 3. Obtener el porcentaje directamente desde listOccupancy
             double occupancy = listOccupancy.getOccupancyByNumberFlight(f.getNumberFlight());
 
             data[index][0] = index + 1;
@@ -212,5 +201,26 @@ public class LogicControlTower {
         } while (curr != flight.getFirtsNodeCircleDoubleList());
 
         return data;
+    }
+
+    // Método de búsqueda auxiliar de pasajeros por vuelo
+    private int getPassengerCountForFlight(int flightNumber, SimpleListReservation listReservation) {
+        if (listReservation == null) return 0;
+
+        NodeSimpleList<LogicReservation> currentRes = listReservation.getFirstReservation();
+        while (currentRes != null) {
+            LogicReservation reservation = currentRes.getData();
+            if (reservation != null && reservation.getFlight() != null) {
+                if (reservation.getFlight().getNumberFlight() == flightNumber) {
+                    return reservation.getQuantityPassengersByFlight();
+                }
+            }
+            currentRes = currentRes.getNextNode();
+        }
+        return 0;
+    }
+
+    public SimpleListOccupancy getListOccupancy() {
+        return listOccupancy;
     }
 }
