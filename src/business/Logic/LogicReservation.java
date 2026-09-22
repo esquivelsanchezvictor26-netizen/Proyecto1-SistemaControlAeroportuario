@@ -26,7 +26,7 @@ public class LogicReservation {
         this.boardedPassengerList = new DoubleListPassenger(flight.getMaximumCapacity());
     }
 
-    // Sobrecarga 1: Reservar pasando la pila global (Mis Viajes)
+    // Reservar pasando la pila global (Mis Viajes)
     public String reserveSeat(String id, String fullName, int age, StackHistoryTravels globalStack) {
         if (passengerList.isFull()) {
             return "ERROR: Capacidad máxima del avión alcanzada. No se pueden registrar más de "
@@ -45,11 +45,6 @@ public class LogicReservation {
         }
 
         return "Reserva realizada con éxito: " + fullName + " en el vuelo " + this.flight.getNumberFlight();
-    }
-
-    // Sobrecarga 2: Reservar con 3 parámetros
-    public String reserveSeat(String id, String fullName, int age) {
-        return reserveSeat(id, fullName, age, null);
     }
 
     // Agregar a la cola de abordaje
