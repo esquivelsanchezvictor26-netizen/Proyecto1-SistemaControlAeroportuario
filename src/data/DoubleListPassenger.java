@@ -59,15 +59,14 @@ public class DoubleListPassenger {
                 
                 boolean mustSwap = false;
 
-                // 1. Criterio Principal: Edad (Menor edad va primero)
-                if (p1.getAge() > p2.getAge()) {
+               //Primer criterio
+                if (p1.getName().compareToIgnoreCase(p2.getName()) > 0) {
                     mustSwap = true;
-                } 
-                // 2. Criterio Secundario (Desempate por Nombre si tienen la misma edad)
-                else if (p1.getAge() == p2.getAge()) {
-                    if (p1.getName().compareToIgnoreCase(p2.getName()) > 0) {
-                        mustSwap = true;
-                    }
+                }//Segundo criterio
+                else if (p1.getName().compareToIgnoreCase(p2.getName()) == 0) {
+                	if((p1.getAge() > p2.getAge())) {
+                		mustSwap = true;
+                	}
                 }
 
                 if (mustSwap) {
