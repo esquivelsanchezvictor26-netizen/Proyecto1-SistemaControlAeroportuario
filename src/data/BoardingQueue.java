@@ -38,7 +38,7 @@ public class BoardingQueue {
     // Agregar a la cola de abordaje
     public boolean addInQueue(Passenger passenger) {
         if (passenger == null || contains(passenger.getId())) {
-            return false; // Evita ingresar pasajeros nulos o duplicados
+            return false; 
         }
 
         NodeSimpleList<Passenger> node = new NodeSimpleList<Passenger>(passenger, null);
