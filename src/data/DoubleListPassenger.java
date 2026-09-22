@@ -87,10 +87,10 @@ public class DoubleListPassenger {
 		if (isEmpty())
 			return "No hay pasajeros registrados";
 
-		StringBuilder sb = new StringBuilder();
+		String sb = "";
 		NodeDoubleList<Passenger> current = firstPassenger;
 		while (current != null) {
-			sb.append(current.getData().toString()).append("\n");
+			sb+=current.getData().toString()+("\n");
 			current = current.getNextNode();
 		}
 		return sb.toString();
@@ -101,10 +101,10 @@ public class DoubleListPassenger {
 		if (isEmpty())
 			return "No hay pasajeros registrados";
 
-		StringBuilder sb = new StringBuilder();
+		String sb = "";
 		NodeDoubleList<Passenger> current = lastPassenger;
 		while (current != null) {
-			sb.append(current.getData().toString()).append("\n");
+			sb+=current.getData().toString()+("\n");
 			current = current.getPreviusNode();
 		}
 		return sb.toString();
