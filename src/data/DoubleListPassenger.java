@@ -59,12 +59,13 @@ public class DoubleListPassenger {
                 
                 boolean mustSwap = false;
 
-               //Primer criterio
+                // Primer criterio
                 if (p1.getName().compareToIgnoreCase(p2.getName()) > 0) {
                     mustSwap = true;
-                }//Segundo criterio
+                } 
+                // Segundo criterio
                 else if (p1.getName().compareToIgnoreCase(p2.getName()) == 0) {
-                	if((p1.getAge() > p2.getAge())) {
+                	if ((p1.getAge() > p2.getAge())) {
                 		mustSwap = true;
                 	}
                 }
@@ -87,13 +88,13 @@ public class DoubleListPassenger {
 		if (isEmpty())
 			return "No hay pasajeros registrados";
 
-		String sb = "";
+		String result = "";
 		NodeDoubleList<Passenger> current = firstPassenger;
 		while (current != null) {
-			sb+=current.getData().toString()+("\n");
+			result += current.getData().toString() + "\n";
 			current = current.getNextNode();
 		}
-		return sb.toString();
+		return result;
 	}
 
 	// Recorrido de fin a inicio
@@ -101,13 +102,13 @@ public class DoubleListPassenger {
 		if (isEmpty())
 			return "No hay pasajeros registrados";
 
-		String sb = "";
+		String result = "";
 		NodeDoubleList<Passenger> current = lastPassenger;
 		while (current != null) {
-			sb+=current.getData().toString()+("\n");
+			result += current.getData().toString() + "\n";
 			current = current.getPreviusNode();
 		}
-		return sb.toString();
+		return result;
 	}
 
 	public int getQuantityNode() {
@@ -118,47 +119,44 @@ public class DoubleListPassenger {
 		return firstPassenger;
 	}
 
-
-public Object[][] getTableData(boolean startToEnd) {
-    if (isEmpty()) {
-        return new Object[0][4];
-    }
-
-    Object[][] data = new Object[quantityNode][4];
-
-    if (startToEnd) {
-        NodeDoubleList<Passenger> current = firstPassenger;
-        int seat = 1;
-        int row = 0;
-        while (current != null) {
-            Passenger p = current.getData();
-            data[row][0] = seat++;
-            data[row][1] = p.getId();
-            data[row][2] = p.getName();
-            data[row][3] = p.getAge();
-            row++;
-            current = current.getNextNode();
+    public Object[][] getTableData(boolean startToEnd) {
+        if (isEmpty()) {
+            return new Object[0][4];
         }
-    } else {
-        NodeDoubleList<Passenger> current = lastPassenger;
-        int seat = quantityNode;
-        int row = 0;
-        while (current != null) {
-            Passenger p = current.getData();
-            data[row][0] = seat--;
-            data[row][1] = p.getId();
-            data[row][2] = p.getName();
-            data[row][3] = p.getAge();
-            row++;
-            current = current.getPreviusNode();
+
+        Object[][] data = new Object[quantityNode][4];
+
+        if (startToEnd) {
+            NodeDoubleList<Passenger> current = firstPassenger;
+            int seat = 1;
+            int row = 0;
+            while (current != null) {
+                Passenger p = current.getData();
+                data[row][0] = seat++;
+                data[row][1] = p.getId();
+                data[row][2] = p.getName();
+                data[row][3] = p.getAge();
+                row++;
+                current = current.getNextNode();
+            }
+        } else {
+            NodeDoubleList<Passenger> current = lastPassenger;
+            int seat = quantityNode;
+            int row = 0;
+            while (current != null) {
+                Passenger p = current.getData();
+                data[row][0] = seat--;
+                data[row][1] = p.getId();
+                data[row][2] = p.getName();
+                data[row][3] = p.getAge();
+                row++;
+                current = current.getPreviusNode();
+            }
         }
+
+        return data;
     }
-
-    return data;
-}
-}
-
-/**
+}/**
  * 
  * //Ordena por nombre si la edad es la misma public void OrderByName(Passenger
  * passeger) {
