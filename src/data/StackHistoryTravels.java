@@ -36,14 +36,6 @@ public class StackHistoryTravels {
 		return data;
 	}
 
-	// Muestra la cabeza sin desapilar
-	public String peek() {
-		if (isEmpty()) {
-			return null;
-		}
-		return this.top.getData();
-	}
-
 	public String showStack() {
 		if (isEmpty()) {
 			return "No hay registros disponibles en la pila.";
