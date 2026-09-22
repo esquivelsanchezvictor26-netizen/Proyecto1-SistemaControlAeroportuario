@@ -118,6 +118,45 @@ public class DoubleListPassenger {
 	public NodeDoubleList<Passenger> getHead() {
 		return firstPassenger;
 	}
+
+
+public Object[][] getTableData(boolean startToEnd) {
+    if (isEmpty()) {
+        return new Object[0][4];
+    }
+
+    Object[][] data = new Object[quantityNode][4];
+
+    if (startToEnd) {
+        NodeDoubleList<Passenger> current = firstPassenger;
+        int seat = 1;
+        int row = 0;
+        while (current != null) {
+            Passenger p = current.getData();
+            data[row][0] = seat++;
+            data[row][1] = p.getId();
+            data[row][2] = p.getName();
+            data[row][3] = p.getAge();
+            row++;
+            current = current.getNextNode();
+        }
+    } else {
+        NodeDoubleList<Passenger> current = lastPassenger;
+        int seat = quantityNode;
+        int row = 0;
+        while (current != null) {
+            Passenger p = current.getData();
+            data[row][0] = seat--;
+            data[row][1] = p.getId();
+            data[row][2] = p.getName();
+            data[row][3] = p.getAge();
+            row++;
+            current = current.getPreviusNode();
+        }
+    }
+
+    return data;
+}
 }
 
 /**

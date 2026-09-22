@@ -9,245 +9,218 @@ import domain.Node.NodeSimpleList;
 
 public class LogicControlTower {
 
-	private DoubleCircleListFlight flight;
-	private SimpleListReservation listRservation;
-	private SimpleListOccupancy listOccupancy;
+    private DoubleCircleListFlight flight;
+    private SimpleListOccupancy listOccupancy;
 
-	public LogicControlTower(DoubleCircleListFlight flight) {
-		this.flight = flight;
-		this.listRservation = new SimpleListReservation();
-		this.listOccupancy = new SimpleListOccupancy();
-	}
+    public LogicControlTower(DoubleCircleListFlight flight) {
+        this.flight = flight;
+        this.listOccupancy = new SimpleListOccupancy();
+    }
 
-	// Metodo para calcular el porcentaje de ocupacion de cada vuelo
-	public void calculateOccupancyRates(SimpleListReservation listReservation) {
+    // M�todo para calcular el porcentaje de ocupaci�n de cada vuelo
+    public void calculateOccupancyRates(SimpleListReservation listReservation) {
+        // Reiniciar la lista de ocupaci�n antes de calcular
+        this.listOccupancy = new SimpleListOccupancy();
 
-		if (this.flight.isEmpty()) {
-			System.out.println("No hay vuelos registrados");
-			return;
-		}
+        if (this.flight == null || this.flight.isEmpty()) {
+            return;
+        }
 
-		NodeDoubleList<Flight> aux = this.flight.getFirtsNodeCircleDoubleList();
+        NodeDoubleList<Flight> aux = this.flight.getFirtsNodeCircleDoubleList();
 
-		do {
+        do {
+            Flight currentFlight = aux.getData();
+            int passengers = getPassengerCountForFlight(currentFlight.getNumberFlight(), listReservation);
+            int capacity = currentFlight.getMaximumCapacity();
 
-			Flight currentFlight = aux.getData();
-			NodeSimpleList<LogicReservation> currentReservation = listReservation.getFirstReservation();
-			boolean found = false;
+            double occupancyRate = 0.0;
+            if (capacity > 0) {
+                // Casteo a double para evitar que la divisi�n de enteros resulte en 0
+                occupancyRate = ((double) passengers / (double) capacity) * 100.0;
+            }
 
-			while (currentReservation != null) {
+            listOccupancy.addLastSimpleListOccupancy(currentFlight.getNumberFlight(), occupancyRate);
 
-				LogicReservation reservation = currentReservation.getData();
+            aux = aux.getNextNode();
+        } while (aux != this.flight.getFirtsNodeCircleDoubleList());
+    }
 
-				if (currentFlight.getNumberFlight() == reservation.getFlight().getNumberFlight()) {
+    public void prioritizeFlights() {
+        if (this.flight == null || this.flight.isEmpty()) {
+            return;
+        }
 
-					int capacity = currentFlight.getMaximumCapacity();
-					int passengers = reservation.getQuantityPassengersByFlight();
-					double occupancyRate = ((double) passengers / capacity) * 100;
+        NodeDoubleList<Flight> head = this.flight.getFirtsNodeCircleDoubleList();
+        NodeDoubleList<Flight> tail = this.flight.getLastNodeCircleDoubleList();
 
-					listOccupancy.addLastSimpleListOccupancy(currentFlight.getNumberFlight(), occupancyRate);
-					found = true;
-					break;
-				}
+        // 1. Convertir la lista circular a lista doble lineal temporalmente
+        tail.setNextNode(null);
+        head.setPreviusNode(null);
 
-				currentReservation = currentReservation.getNextNode();
-			}
+        // 2. Aplicar QuickSort
+        NodeDoubleList<Flight> newHead = orderingFlighByOcuppationQuickSort(head, listOccupancy);
 
-			if (!found) {
-				listOccupancy.addLastSimpleListOccupancy(currentFlight.getNumberFlight(), 0.0);
-			}
+        // 3. Buscar el �ltimo nodo tras el ordenamiento
+        NodeDoubleList<Flight> newTail = newHead;
+        while (newTail.getNextNode() != null) {
+            newTail = newTail.getNextNode();
+        }
 
-			aux = aux.getNextNode();
-		} while (aux != this.flight.getFirtsNodeCircleDoubleList());
-	}
+        // 4. Volver a enlazar circularmente
+        newTail.setNextNode(newHead);
+        newHead.setPreviusNode(newTail);
 
+        // 5. Actualizar los nodos de la lista original
+        this.flight.setFirtsNodeCircleDoubleList(newHead);
+        this.flight.setLastNodeCircleDoubleList(newTail);
+        this.flight.setCurrentNode(newHead);
+    }
 
+    public NodeDoubleList<Flight> orderingFlighByOcuppationQuickSort(NodeDoubleList<Flight> listFlight,
+            SimpleListOccupancy listOccupancy) {
 
-	public void prioritizeFlights() {
+        if (listFlight == null || listFlight.getNextNode() == null) {
+            return listFlight;
+        }
 
-		if (this.flight.isEmpty()) {
-			System.out.println("No hay vuelos registrados para priorizar.");
-			return;
-		}
+        NodeDoubleList<Flight> pivot = listFlight;
+        NodeDoubleList<Flight> allListFlight = listFlight.getNextNode();
 
-		NodeDoubleList<Flight> head = this.flight.getFirtsNodeCircleDoubleList();
-		NodeDoubleList<Flight> tail = this.flight.getLastNodeCircleDoubleList();
+        pivot.setNextNode(null);
+        if (allListFlight != null) {
+            allListFlight.setPreviusNode(null);
+        }
 
-		// 1. "Abrir" la lista: se rompe el enlace circular para que el
-		//    QuickSort la vea como una lista doble normal, terminada en null.
-		//    (si hay un solo vuelo, head y tail son el mismo nodo, y estas
-		//    dos líneas igual lo dejan con next=null y previus=null, sin
-		//    necesitar un caso aparte)
-		tail.setNextNode(null);
-		head.setPreviusNode(null);
+        NodeDoubleList<Flight> prioritizeFirst = null;
+        NodeDoubleList<Flight> prioritizeLast = null;
 
-		// 2. Ordenar (esto no cambia: es el mismo método que ya tenías)
-		NodeDoubleList<Flight> newHead = orderingFlighByOcuppationQuickSort(head, listOccupancy);
+        NodeDoubleList<Flight> remainingFirst = null;
+        NodeDoubleList<Flight> remainingLast = null;
 
-		// 3. Encontrar la nueva cola caminando hasta el final
-		NodeDoubleList<Flight> newTail = newHead;
-		while (newTail.getNextNode() != null) {
-			newTail = newTail.getNextNode();
-		}
+        double occupationPivote = listOccupancy.getOccupancyByNumberFlight(pivot.getData().getNumberFlight());
+        NodeDoubleList<Flight> current = allListFlight;
 
-		// 4. "Cerrar" la lista de nuevo en círculo
-		newTail.setNextNode(newHead);
-		newHead.setPreviusNode(newTail);
+        while (current != null) {
+            NodeDoubleList<Flight> nextSaveNode = current.getNextNode();
 
-		// 5. Actualizar los punteros de la lista circular con el nuevo orden
-		this.flight.setFirtsNodeCircleDoubleList(newHead);
-		this.flight.setLastNodeCircleDoubleList(newTail);
-		this.flight.setCurrentNode(newHead); // la navegación arranca de nuevo desde el primero
-	}
+            current.setNextNode(null);
+            current.setPreviusNode(null);
 
+            double currentOccupation = listOccupancy.getOccupancyByNumberFlight(current.getData().getNumberFlight());
+            boolean before;
 
-	/**
-	 * QuickSort manual sobre una lista doblemente enlazada de vuelos (sin arreglos
-	 * ni colecciones), ordenando de MAYOR a MENOR porcentaje de ocupación. Si dos
-	 * vuelos tienen la misma ocupación, gana (va primero) el de menor número de
-	 * vuelo.
-	 *
-	 * Idea general del QuickSort aplicado a lista enlazada: 1. Elegimos un "pivote"
-	 * (aquí: siempre el primer nodo de la lista). 2. Partimos el resto de los nodos
-	 * en dos grupos: - "prioritize" = los que van ANTES que el pivote (más
-	 * ocupación, o empate con menor número de vuelo) - "remaining" = los que van
-	 * DESPUÉS que el pivote 3. Ordenamos cada grupo por separado llamando a este
-	 * mismo método (recursividad = quicksort de cada mitad). 4. Pegamos todo en el
-	 * orden final: [prioritize ordenado] + [pivote] + [remaining ordenado]
-	 */
-	public NodeDoubleList<Flight> orderingFlighByOcuppationQuickSort(NodeDoubleList<Flight> listFlight,
-			SimpleListOccupancy listOccupancy) {
+            if (currentOccupation != occupationPivote) {
+                before = currentOccupation > occupationPivote;
+            } else {
+                before = current.getData().getNumberFlight() < pivot.getData().getNumberFlight();
+            }
 
-		// --- CASO BASE ---
-		// Si la lista está vacía (null) o tiene un solo nodo (no tiene "next"),
-		// ya está "ordenada" por definición: no hay nada que partir ni comparar.
-		if (listFlight == null || listFlight.getNextNode() == null) {
-			return listFlight;
-		}
+            if (before) {
+                if (prioritizeFirst == null) {
+                    prioritizeFirst = current;
+                    prioritizeLast = current;
+                } else {
+                    prioritizeLast.setNextNode(current);
+                    current.setPreviusNode(prioritizeLast);
+                    prioritizeLast = current;
+                }
+            } else {
+                if (remainingFirst == null) {
+                    remainingFirst = current;
+                    remainingLast = current;
+                } else {
+                    remainingLast.setNextNode(current);
+                    current.setPreviusNode(remainingLast);
+                    remainingLast = current;
+                }
+            }
 
-		// --- 1. ELEGIR EL PIVOTE ---
-		// Se toma siempre el primer nodo de la sublista actual como pivote.
-		NodeDoubleList<Flight> pivot = listFlight;
+            current = nextSaveNode;
+        }
 
-		// "allListFlight" es el resto de la lista, es decir, todo menos el pivote.
-		NodeDoubleList<Flight> allListFlight = listFlight.getNextNode();
+        NodeDoubleList<Flight> prioritizeOrder = orderingFlighByOcuppationQuickSort(prioritizeFirst, listOccupancy);
+        NodeDoubleList<Flight> remainingOrder = orderingFlighByOcuppationQuickSort(remainingFirst, listOccupancy);
 
-		// Se "desengancha" el pivote de la lista: se corta el enlace entre el
-		// pivote y el resto, para poder tratarlo como una pieza aparte que
-		// vamos a reinsertar más adelante en su posición final.
-		pivot.setNextNode(null);
-		if (allListFlight != null) {
-			allListFlight.setPreviusNode(null);
-		}
+        pivot.setNextNode(remainingOrder);
+        if (remainingOrder != null) {
+            remainingOrder.setPreviusNode(pivot);
+        }
 
-		// --- 2. PREPARAR LOS DOS GRUPOS (particiones) ---
-		// "prioritize" = nodos que deben quedar ANTES del pivote en el resultado final
-		NodeDoubleList<Flight> prioritizeFirst = null; // cabeza de ese grupo
-		NodeDoubleList<Flight> prioritizeLast = null; // cola de ese grupo (para ir agregando al final)
+        if (prioritizeOrder == null) {
+            pivot.setPreviusNode(null);
+            return pivot;
+        } else {
+            NodeDoubleList<Flight> tailPrioritize = prioritizeOrder;
+            while (tailPrioritize.getNextNode() != null) {
+                tailPrioritize = tailPrioritize.getNextNode();
+            }
+            tailPrioritize.setNextNode(pivot);
+            pivot.setPreviusNode(tailPrioritize);
+            return prioritizeOrder;
+        }
+    }
 
-		// "remaining" = nodos que deben quedar DESPUÉS del pivote
-		NodeDoubleList<Flight> remainingFirst = null;
-		NodeDoubleList<Flight> remainingLast = null;
+    public Object[][] getPrioritizedTableData(SimpleListReservation listReservation) {
+        if (flight == null || flight.isEmpty()) {
+            return new Object[0][7];
+        }
 
-		// Ocupación del vuelo que es el pivote — se calcula UNA vez, fuera del
-		// bucle, para no recalcularla en cada comparación.
-		double occupationPivote = listOccupancy.getOccupancyByNumberFlight(pivot.getData().getNumberFlight());
+        // 1. Recalcular ocupaci�n antes de popular la tabla
+        calculateOccupancyRates(listReservation);
 
-		// Puntero para recorrer el resto de la lista (todo menos el pivote)
-		NodeDoubleList<Flight> current = allListFlight;
+        int count = 0;
+        NodeDoubleList<Flight> curr = flight.getFirtsNodeCircleDoubleList();
+        do {
+            count++;
+            curr = curr.getNextNode();
+        } while (curr != flight.getFirtsNodeCircleDoubleList());
 
-		// --- 3. RECORRER EL RESTO Y REPARTIR CADA NODO EN SU GRUPO ---
-		while (current != null) {
+        Object[][] data = new Object[count][7];
+        curr = flight.getFirtsNodeCircleDoubleList();
+        int index = 0;
 
-			// Guardamos el "siguiente" ANTES de tocar los punteros de "current",
-			// porque en unas líneas más abajo vamos a desconectar a "current"
-			// de la lista original (y si no lo guardamos antes, perdemos el
-			// camino para seguir recorriendo).
-			NodeDoubleList<Flight> nextSaveNodeCircleDoubleList = current.getNextNode();
+        do {
+            Flight f = curr.getData();
 
-			// Se desconecta "current" de todo lo demás: va a pasar a ser el
-			// último nodo de "prioritize" o de "remaining", así que sus punteros
-			// viejos ya no sirven.
-			current.setNextNode(null);
-			current.setPreviusNode(null);
+            // 2. Obtener reservas
+            int reservations = getPassengerCountForFlight(f.getNumberFlight(), listReservation);
 
-			// Ocupación del vuelo actual, para compararla contra la del pivote
-			double currentOccupation = listOccupancy.getOccupancyByNumberFlight(current.getData().getNumberFlight());
+            // 3. Obtener el porcentaje directamente desde listOccupancy
+            double occupancy = listOccupancy.getOccupancyByNumberFlight(f.getNumberFlight());
 
-			// ¿Este vuelo debe ir ANTES que el pivote en el resultado final?
-			boolean before;
+            data[index][0] = index + 1;
+            data[index][1] = "Vuelo " + f.getNumberFlight();
+            data[index][2] = f.getRoute();
+            data[index][3] = f.getAircraftType();
+            data[index][4] = f.getMaximumCapacity();
+            data[index][5] = reservations;
+            data[index][6] = String.format("%.2f%%", occupancy);
 
-			if (currentOccupation != occupationPivote) {
-				// Caso normal: gana el que tiene MAYOR ocupación (va primero)
-				before = currentOccupation > occupationPivote;
-			} else {
-				// Caso de EMPATE en ocupación: desempata el número de vuelo
-				// más chico (ese va primero)
-				before = current.getData().getNumberFlight() < pivot.getData().getNumberFlight();
-			}
+            index++;
+            curr = curr.getNextNode();
+        } while (curr != flight.getFirtsNodeCircleDoubleList());
 
-			if (before) {
-				// Este nodo va al grupo "prioritize" (antes del pivote)
-				if (prioritizeFirst == null) {
-					// Es el primer elemento que entra a ese grupo
-					prioritizeFirst = current;
-					prioritizeLast = current;
-				} else {
-					// Se agrega al final del grupo, enlazando con el último que había
-					prioritizeLast.setNextNode(current);
-					current.setPreviusNode(prioritizeLast);
-					prioritizeLast = current;
-				}
+        return data;
+    }
 
-			} else {
-				// Este nodo va al grupo "remaining" (después del pivote)
-				if (remainingFirst == null) {
-					remainingFirst = current;
-					remainingLast = current;
-				} else {
-					remainingLast.setNextNode(current);
-					current.setPreviusNode(remainingLast);
-					remainingLast = current;
-				}
-			}
+    // M�todo de b�squeda auxiliar de pasajeros por vuelo
+    private int getPassengerCountForFlight(int flightNumber, SimpleListReservation listReservation) {
+        if (listReservation == null) return 0;
 
-			// Avanzamos con el puntero que guardamos al principio del bucle
-			// (ya que "current.getNextNode()" ahora sería null)
-			current = nextSaveNodeCircleDoubleList;
-		}
+        NodeSimpleList<LogicReservation> currentRes = listReservation.getFirstReservation();
+        while (currentRes != null) {
+            LogicReservation reservation = currentRes.getData();
+            if (reservation != null && reservation.getFlight() != null) {
+                if (reservation.getFlight().getNumberFlight() == flightNumber) {
+                    return reservation.getQuantityPassengersByFlight();
+                }
+            }
+            currentRes = currentRes.getNextNode();
+        }
+        return 0;
+    }
 
-		// --- 4. ORDENAR RECURSIVAMENTE CADA GRUPO ---
-		// Cada llamada recursiva resuelve un pedazo más chico del mismo problema,
-		// hasta llegar al caso base (0 o 1 nodo).
-		NodeDoubleList<Flight> prioritizeOrder = orderingFlighByOcuppationQuickSort(prioritizeFirst, listOccupancy);
-		NodeDoubleList<Flight> prioritizeAll = orderingFlighByOcuppationQuickSort(remainingFirst, listOccupancy);
-
-		// --- 5. RECONSTRUIR LA LISTA FINAL: [prioritizeOrder] + [pivot] +
-		// [prioritizeAll] ---
-
-		// Caso especial: si no había NADA en el grupo "prioritize" (nadie iba
-		// antes del pivote), entonces el pivote pasa a ser la CABEZA de esta
-		// sublista, seguido directo por el grupo "remaining" ya ordenado.
-		if (prioritizeOrder == null) {
-
-			pivot.setPreviusNode(null);
-			pivot.setNextNode(prioritizeAll);
-
-			if (prioritizeAll != null) {
-				prioritizeAll.setPreviusNode(pivot);
-			}
-
-
-		}
-
-		// Caso general: "prioritizeOrder" ya es una lista (doblemente enlazada)
-		// ordenada. Hay que caminar hasta su ÚLTIMO nodo para poder pegar el
-		// pivote justo después de
-		return pivot; // el pivote queda como nueva cabeza
-	}
-
-
-	public SimpleListOccupancy getListOccupancy() {
-		return listOccupancy;
-	}
+    public SimpleListOccupancy getListOccupancy() {
+        return listOccupancy;
+    }
 }
