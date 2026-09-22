@@ -9,104 +9,137 @@ import data.StackHistoryTravels;
 
 public class LogicReservation {
 
-	private DoubleListPassenger passengerList; // no generico
-	private Flight flight;
-	private BoardingQueue boardingQueue;
-	private StackHistoryTravels travelHistory;
+    private DoubleListPassenger passengerList;
+    private Flight flight;
+    private BoardingQueue boardingQueue;
+    private StackHistoryTravels travelHistory;
+    private DoubleListPassenger boardedPassengerList;
 
-	public LogicReservation() {
-	}
+    public LogicReservation() {
+    }
 
-	public LogicReservation(Flight flight) {
-		this.flight = flight;
-		// inicializar utilizando la capacidad maxima
-		this.passengerList = new DoubleListPassenger(flight.getMaximumCapacity());
-		this.boardingQueue = new BoardingQueue();
-		this.travelHistory = new StackHistoryTravels();
-	}
+    public LogicReservation(Flight flight) {
+        this.flight = flight;
+        this.passengerList = new DoubleListPassenger(flight.getMaximumCapacity());
+        this.boardingQueue = new BoardingQueue();
+        this.travelHistory = new StackHistoryTravels();
+        this.boardedPassengerList = new DoubleListPassenger(flight.getMaximumCapacity());
+    }
 
-	// Metodo que reserva
-	public String reserveSeat(String id, String fullName, int age) {
-		if (passengerList.isFull()) {
-			return "ERROR!!!! Capacidad mï¿½xima del aviï¿½n alcanzada. No se pueden registrar mï¿½s de "
-					+ passengerList.getQuantityNode() + " pasajeros.";
-		}
+    // Sobrecarga 1: Reservar pasando la pila global (Mis Viajes)
+    public String reserveSeat(String id, String fullName, int age, StackHistoryTravels globalStack) {
+        if (passengerList.isFull()) {
+            return "ERROR: Capacidad máxima del avión alcanzada. No se pueden registrar más de "
+                    + flight.getMaximumCapacity() + " pasajeros.";
+        }
 
-		Passenger passenger = new Passenger(id, fullName, age);
-		passengerList.addLast(passenger);
-		passengerList.orderByNameAndAgeBubble();
+        Passenger passenger = new Passenger(id, fullName, age);
+        passengerList.addLast(passenger);
+        passengerList.orderByNameAndAgeBubble();
 
-		travelHistory.push("Vuelo " + flight.getNumberFlight() + " (" + flight.getRoute() + ") - Pasajero: " + fullName
-				+ " (ID " + id + ")");
+        String record = "Pasajero: " + fullName + " | Vuelo: " + flight.getNumberFlight()
+                + " (" + flight.getRoute() + ") | ID: " + id + " | Edad: " + age;
 
-		return "Reserva realizada con exito: " + fullName + "en el vuelo" + this.flight.getNumberFlight();
-	}
+        if (globalStack != null) {
+            globalStack.push(record);
+        }
 
-	// Mï¿½todo para agregar al pasajero a la cola de abordaje asegurando que tenga
-	// reserva en este vuelo
-	public String addPassengerToBoardingQueue(String passengerId) {
-		// Buscar al pasajero en la lista doble de reservas del vuelo
-		NodeDoubleList<Passenger> current = passengerList.getHead();
-		Passenger foundPassenger = null;
+        return "Reserva realizada con éxito: " + fullName + " en el vuelo " + this.flight.getNumberFlight();
+    }
 
-		while (current != null) {
-			if (current.getData().getId().equalsIgnoreCase(passengerId)) {
-				foundPassenger = current.getData();
-				break;
-			}
-			current = current.getNextNode();
-		}
+    // Sobrecarga 2: Reservar con 3 parámetros
+    public String reserveSeat(String id, String fullName, int age) {
+        return reserveSeat(id, fullName, age, null);
+    }
 
-		// Si no tiene reserva, no puede ingresar a la cola
-		if (foundPassenger == null) {
-			return "ERROR: El pasajero ID " + passengerId + " no tiene reserva en este vuelo.";
-		}
+    // Agregar a la cola de abordaje
+    public String addPassengerToBoardingQueue(String passengerId) {
+        NodeDoubleList<Passenger> current = passengerList.getHead();
+        Passenger foundPassenger = null;
 
-		// Intentar agregar a la cola (valida que no aborde o se cole dos veces)
-		boolean added = boardingQueue.addInQueue(foundPassenger);
-		if (added) {
-			return "Pasajero " + foundPassenger.getName() + " ingresado a la cola de abordaje.";
-		} else {
-			return "ERROR: El pasajero ya se encuentra en la cola de abordaje.";
-		}
-	}
+        while (current != null) {
+            if (current.getData().getId().equalsIgnoreCase(passengerId)) {
+                foundPassenger = current.getData();
+                break;
+            }
+            current = current.getNextNode();
+        }
 
-	// Mï¿½todo para abordar al siguiente en la cola (FIFO)
-	public String boardNextPassenger() {
-		Passenger boardedPassenger = boardingQueue.board();
-		if (boardedPassenger == null) {
-			return "No hay pasajeros en la cola para abordar.";
-		}
-		return "El pasajero " + boardedPassenger.getName() + " ha abordado con ï¿½xito el vuelo "
-				+ flight.getNumberFlight();
-	}
+        if (foundPassenger == null) {
+            return "ERROR: El pasajero ID " + passengerId + " no tiene reserva en este vuelo.";
+        }
 
-	public BoardingQueue getBoardingQueue() {
-		return boardingQueue;
-	}
+        NodeDoubleList<Passenger> currentBoarded = boardedPassengerList.getHead();
+        while (currentBoarded != null) {
+            if (currentBoarded.getData().getId().equalsIgnoreCase(passengerId)) {
+                return "ERROR: El pasajero " + foundPassenger.getName() + " ya abordó el avión previamente.";
+            }
+            currentBoarded = currentBoarded.getNextNode();
+        }
 
-	// Metodo que obtiene la reservacion de cada vuelo
-	public Flight getFlight() {
-		return flight;
-	}
+        boolean added = boardingQueue.addInQueue(foundPassenger);
+        if (added) {
+            return "Pasajero " + foundPassenger.getName() + " ingresado a la cola de abordaje.";
+        } else {
+            return "ERROR: El pasajero ya se encuentra en la cola de abordaje.";
+        }
+    }
 
-	// Cuantos pasajeros tiene el vuelo
-	public int getQuantityPassengersByFlight() {
-		return passengerList.getQuantityNode();
-	}
+    // Abordar al siguiente pasajero (FIFO)
+    public String boardNextPassenger() {
+        Passenger boardedPassenger = boardingQueue.board();
+        if (boardedPassenger == null) {
+            return "No hay pasajeros en la cola para abordar.";
+        }
 
-	public String getPassengersAscending() {
-		return passengerList.showFromStartToEnd();
-	}
+        boardedPassengerList.addLast(boardedPassenger);
+        return "El pasajero " + boardedPassenger.getName() + " ha abordado con éxito el vuelo " + flight.getNumberFlight();
+    }
 
-	public String getPassengersDescending() {
-		return passengerList.showFromEndToStart();
-	}
+    public BoardingQueue getBoardingQueue() {
+        return boardingQueue;
+    }
+
+    public void setBoardingQueue(BoardingQueue boardingQueue) {
+        this.boardingQueue = boardingQueue;
+    }
+
+    public DoubleListPassenger getBoardedPassengerList() {
+        return boardedPassengerList;
+    }
+
+    public void setBoardedPassengerList(DoubleListPassenger boardedPassengerList) {
+        this.boardedPassengerList = boardedPassengerList;
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public int getQuantityPassengersByFlight() {
+        return passengerList.getQuantityNode();
+    }
+
+    public String getPassengersAscending() {
+        return passengerList.showFromStartToEnd();
+    }
+
+    public String getPassengersDescending() {
+        return passengerList.showFromEndToStart();
+    }
 
     public Object[][] getPassengersTable(boolean startToEnd) {
         if (passengerList == null) {
             return new Object[0][4];
         }
         return passengerList.getTableData(startToEnd);
+    }
+
+    public DoubleListPassenger getPassengerList() {
+        return passengerList;
+    }
+
+    public void setPassengerList(DoubleListPassenger passengerList) {
+        this.passengerList = passengerList;
     }
 }

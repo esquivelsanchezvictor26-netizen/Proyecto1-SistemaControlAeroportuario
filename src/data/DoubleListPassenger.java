@@ -42,75 +42,46 @@ public class DoubleListPassenger {
 
 	public void orderByNameAndAgeBubble() {
 
-		if (isFull())
-			return;
+        if (isEmpty( ) || this.firstPassenger.getNextNode() == null) {
+            return;
+        }
 
-		if (this.firstPassenger == null || this.firstPassenger.getNextNode() == null)
-			return;
+        boolean isChange;
 
-		boolean isChange;
+        do {
+            isChange = false;
+            NodeDoubleList<Passenger> current = this.firstPassenger;
 
-		do {
-			isChange = false;
-			NodeDoubleList<Passenger> current = this.firstPassenger;
+            while (current != null && current.getNextNode() != null) {
+                
+                Passenger p1 = current.getData();
+                Passenger p2 = current.getNextNode().getData();
+                
+                boolean mustSwap = false;
 
-			while (current.getNextNode() != null) {
-				boolean mustSwap = false;
-				// Esto compara si el nombre es mayor o si son iguales
-				if (current.getData().getName().compareTo(current.getNextNode().getData().getName()) > 0) {
-					mustSwap = true;
-				} else if (current.getData().getName().compareTo(current.getNextNode().getData().getName()) == 0) {
-					if (current.getData().getAge() < current.getNextNode().getData().getAge()) {
-						mustSwap = true;
-					}
-				}
+                // 1. Criterio Principal: Edad (Menor edad va primero)
+                if (p1.getAge() > p2.getAge()) {
+                    mustSwap = true;
+                } 
+                // 2. Criterio Secundario (Desempate por Nombre si tienen la misma edad)
+                else if (p1.getAge() == p2.getAge()) {
+                    if (p1.getName().compareToIgnoreCase(p2.getName()) > 0) {
+                        mustSwap = true;
+                    }
+                }
 
-				if (mustSwap) {
+                if (mustSwap) {
+                    // Intercambiar datos dentro de los nodos
+                    current.setData(p2);
+                    current.getNextNode().setData(p1);
+                    isChange = true;
+                }
 
-					NodeDoubleList<Passenger> a = current;
-					NodeDoubleList<Passenger> b = current.getNextNode();
-					NodeDoubleList<Passenger> beforeA = a.getPreviusNode();
-					NodeDoubleList<Passenger> afterB = b.getNextNode();
+                current = current.getNextNode();
+            }
 
-					if (beforeA != null) {
-						beforeA.setNextNode(b);
-					} else {
-						this.firstPassenger = b;
-					}
-
-					b.setPreviusNode(beforeA);
-					b.setNextNode(a);
-					a.setPreviusNode(b);
-
-					a.setNextNode(afterB);
-
-					if (afterB != null) {
-						afterB.setPreviusNode(a);
-					}
-
-					if (afterB == null) {
-						this.lastPassenger = a;
-					}
-
-					current = a;
-				}
-
-				current = current.getNextNode();
-			}
-
-		} while (isChange);
-	}
-
-	public String show() {
-		String exit = " ";
-		NodeDoubleList<Passenger> aux = this.firstPassenger;
-		while (aux != null) {
-			exit += aux.getData() + " ";
-			aux = aux.getNextNode();
-		}
-
-		return exit;
-	}
+        } while (isChange);
+    }
 
 	// Recorrido de inicio a fin
 	public String showFromStartToEnd() {
